@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+
+	<!-- シナリオ情報の取得 -->
+	<select id="getScenarioList" resultClass="dto.Entity.StepMail.Scenario">
+		SELECT
+			TBL1.$SNO$,
+			TBL1.$SCENARIO_NAME$,
+			TBL2.fname
+		FROM
+			$SCHEMA$.$TB_SCENARIO$ TBL1
+		LEFT JOIN
+			$SCHEMA$.$TB_PAGE_FRAME$ TBL2
+		ON
+			TBL1.$SNO$ = TBL2.$SNO$
+		WHERE
+			TBL2.fname IS NOT NULL AND TBL2.fname != ''
+	</select>
+
+	<!-- demoアカウント情報の取得 -->
+	<select id="getSetUpInfoDemo" resultClass="dto.Entity.StepMail.SetUpInfo">
+		SELECT
+			service_plan_id,
+			demo
+		FROM
+			076admin.setup_info
+		WHERE
+			account_name = #ACCOUNT#
+	</select>
+
+		<!-- lineコネクトの削除-->
+	<delete id="cleanLineConnect">
+		DELETE FROM
+			$SCHEMA$.line_connect
+		WHERE
+			line_account_id = #LINE_ACCOUNT_ID#
+	</delete>
+
+</sqlMap>

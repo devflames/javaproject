@@ -1,0 +1,84 @@
+                  <form action="php2java.php?file=LIN0021&if=3" method="POST">
+                    <div class="talkSummary__header">
+                      <div class="input-group input-group">
+                        <input class="form-control bg-light" id="appendedInputButton" name="display_name" type="text" value="$!{DISPLAY_NAME}" placeholder="名前で検索">
+                        <span class="input-group-append">
+                          <button class="btn btn-secondary" type="submit">
+                            <svg class="c-icon" style="height: 0.9rem">
+                              <use xlink:href="/-ui/vendors/@coreui/icons/svg/free.svg#cil-magnifying-glass"></use>
+                            </svg>
+                          </button>
+                        </span>
+                      </div>
+                    </div>
+                  </form>
+                    <div class="talkSummary__body" id="talkSummary__body">
+                      <ul class="talkList">
+                      #foreach( $!{friend} in $!{LINE_FRIEND_LIST})
+                        <li class="talkList__item">
+                          <div class="talkSummaryCard">
+                           #if( $!{friend.not_read_count} > 0 )
+                           <span data-badgeicon="$!{friend.not_read_count}" class="badgeicon">
+                            <div class="talkSummaryCard__image trim-image">
+                              <a href="javascript:void(0);" onclick="loadProfile('FRIEND_FORM_$!{friend.friend_id}')">
+                              #if( $!{friend.profile_image} != "" )
+                              	<img src="$!{friend.profile_image}" alt="">
+                              #else
+                              	<img src="/-ui/assets/img/icon.png" alt="">
+                              #end
+                              </a>
+                            </div>
+                           </span>
+                           #else
+                             <div class="talkSummaryCard__image trim-image">
+                              <a href="javascript:void(0);" onclick="loadProfile('FRIEND_FORM_$!{friend.friend_id}')">
+                              #if( $!{friend.profile_image} != "" )
+                              	<img src="$!{friend.profile_image}" alt="">
+                              #else
+                              	<img src="/-ui/assets/img/icon.png" alt="">
+                              #end
+                              </a>
+                            </div>
+                           #end
+
+                            <div class="talkSummaryCard__content">
+                              <div class="talkSummaryCard__header">
+                                <div class="talkSummaryCard__name">
+                                	 $!{friend.display_name}
+                                </div>
+                                <div class="talkSummaryCard__badge">
+                                #if( $!{friend.support} == 1)
+                                  <span class="badge bg-success text-white">対応済</span>
+                                #else
+                                  <span class="badge bg-warning text-white">未対応</span>
+                                #end
+                                </div>
+                              </div>
+
+                            </div>
+                            <div class="talkSummaryCard__button">
+                            <form method="post" action="./php2java.php?file=LIN0022&if=3" id="FRIEND_FORM_$!{friend.friend_id}">
+                            <input type="hidden" name="FRIEND_ID" value="$!{friend.friend_id}">
+                            <input type="hidden" name="LINE_ID"  value="$!{friend.line_id}">
+                              <button class="btn" type="submit">
+                                <i class="cil-notes"></i>
+                              </button>
+                             </form>
+                            </div>
+                          </div>
+                        </li>
+                       #end
+
+                      </ul>
+                    </div>
+                    <div class="talkSummary__footer">
+                     #if( $!{LINE_FRIEND_LIST.size()} > 10 && $!{LINE_FRIEND_LIST.size()} < $!{FRIEND_COUNT} )
+                     <form action="php2java.php?file=LIN0021&if=3" method="POST">
+                     <input type="hidden" name="friend_limit" id="FRIEND_LIMIT" value="$!{CONTINUE}">
+                     <input type="hidden" name="paging_flg" value="1">
+                      <button class="btn btn-sm btn-pill btn-light btn-block" type="submit" id="LOAD_FRIEND">
+                        次の10件をロード
+                      </button>
+                     </form>
+                     #end
+                    </div>

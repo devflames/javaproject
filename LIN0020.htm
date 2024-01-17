@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<!--
+* CoreUI Pro based Bootstrap Admin Template
+* @version v3.2.0
+* @link https://coreui.io/pro/
+* Copyright (c) 2020 creativeLabs ?ukasz Holeczek
+* License (https://coreui.io/pro/license)
+-->
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="description" content="CoreUI - Open Source Bootstrap Admin Template">
+    <meta name="author" content="?ukasz Holeczek">
+    <meta name="keyword" content="Bootstrap,Admin,Template,Open,Source,jQuery,CSS,HTML,RWD,Dashboard">
+    <title>オートビズ管理画面</title>
+    <!-- Main styles for this application-->
+	#parse( "include/style.inc")
+  </head>
+
+  <body class="c-app">
+	#parse( "include/sidebar.inc")
+    <div class="c-wrapper">
+	#parse( "include/global_header.inc")
+      <div class="c-body">
+        <main class="c-main">
+          <div class="container-fluid">
+            <div class="fade-in">
+              <h1 class="h4 d-flex align-items-center mb-3">
+                友だちリスト一覧
+              </h1>
+              <div class="card">
+              <form action="php2java.php?file=LIN0020&if=3" method="POST" name="EXEC_FORM" id="EXEC_FORM">
+                <div class="card-body">
+                  <div class="row form-group">
+                    <label class="form-label col-lg-2" for="text-input">
+                      友だちの表示名
+                    </label>
+                    <div class="col-lg-10">
+                      <input class="form-control" type="text" name="DISPLAY_NAME" value="$!{DISPLAY_NAME}" placeholder="">
+                    </div>
+                  </div>
+                  <div class="row form-group">
+                    <label class="form-label col-lg-2" for="text-input">
+                      友だち登録日
+                    </label>
+                    <div class="col-lg-10 d-md-flex">
+                      <div class="input-group">
+                        <input class="form-control datetimepicker is-noTime" id="CREATE_DATE_START" name="CREATE_DATE_START" type="text" value="$!{CREATE_DATE_START}" placeholder="開始日">
+                        <div class="input-group-append">
+                          <span class="input-group-text">～</span>
+                        </div>
+                        <input class="form-control datetimepicker is-noTime" id="CREATE_DATE_END" name="CREATE_DATE_END" type="text" value="$!{CREATE_DATE_END}" placeholder="終了日">
+                      </div>
+                      <div class="btn-group mt-2 mt-md-0 ml-md-4 col-md-3 px-0" role="group" aria-label="Basic example">
+                        <button type="button" class="btn btn-light" id="LAST_MONTH">先月</button>
+                        <button type="button" class="btn btn-light" id="THIS_MONTH">今月</button>
+                        <button type="button" class="btn btn-light" id="TODAY">本日</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row form-group">
+                    <label class="form-label col-lg-2" for="text-input">
+                      メール連携状態
+                    </label>
+                    #if( $!{MAIL_STATUS} == 1 )
+                    	#set( $MAIL_STATUS_1 = "checked" )
+                    #elseif( $!{MAIL_STATUS} == 2 )
+                    	#set( $MAIL_STATUS_2 = "checked" )
+                    #elseif( $!{MAIL_STATUS} == 3 )
+                    	#set( $MAIL_STATUS_3 = "checked" )
+                    #end
+                    <div class="col-lg-10">
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="MAIL_STATUS" id="CONNECT1" value="1" $MAIL_STATUS_1>
+                        <label class="form-check-label" for="CONNECT1">全て</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="MAIL_STATUS" id="CONNECT2" value="2" $MAIL_STATUS_2>
+                        <label class="form-check-label" for="CONNECT2">未連携</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="MAIL_STATUS" id="CONNECT3" value="3" $MAIL_STATUS_3>
+                        <label class="form-check-label" for="CONNECT3">連携済</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row form-group">
+                    <label class="form-label col-lg-2" for="text-input">
+                      ステータス
+                    </label>
+                    #if( $!{STATE} == 99 )
+                    	#set( $STATE_99 = "checked" )
+                    #elseif( $!{STATE} == 0 )
+                    	#set( $STATE_0 = "checked" )
+                    #elseif( $!{STATE} == 2 )
+                    	#set( $STATE_2 = "checked" )
+                   	#elseif( $!{STATE} == 3 )
+                    	#set( $STATE_3 = "checked" )
+                    #end
+                    <div class="col-lg-10">
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="STATE" id="STATE99" value="99" $STATE_99 >
+                        <label class="form-check-label" for="STATUS99">全て</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="STATE" id="STATE0" value="0" $STATE_0 >
+                        <label class="form-check-label" for="STATE0">友だち状態</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="STATE" id="STATE3" value="2" $STATE_2 >
+                        <label class="form-check-label" for="STATE3">自分からのブロック</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="STATE" id="STATE4" value="3" $STATE_3 >
+                        <label class="form-check-label" for="STATE4">相手からのブロック</label>
+                      </div>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row p-0">
+                    <div class="col-lg-6">
+                      <div class="row form-group">
+                        <label class="form-label col-lg-2" for="text-input">
+                          タグ
+                        </label>
+                        <div class="col-lg-10">
+                          <input type="text" class="form-control tag-suggest" name="TAG" id="TAG" value='$!{TAG_VALUE}'>
+                          <small class="form-text text-muted mb-2">最大5つまで指定可能です</small>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-lg-6">
+                      <div class="row form-group">
+                        <label class="form-label col-lg-2" for="text-input">
+                          表示順
+                        </label>
+                         #if( $!{SORT} == 1 )
+                         	#set( $sort1 = "selected" )
+                         #elseif( $!{SORT} == 2)
+                         	#set( $sort2 = "selected" )
+                         #end
+                        <div class="col-lg-10">
+                          <select class="form-control" name="SORT">
+                            <option value="1" $sort1>友だち登録日時の新しい順</option>
+                            <option value="2" $sort2>友だち登録日時の古い順</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-footer text-right">
+                  <button type="submit" class="btn btn-primary">絞り込み</button>
+                </div>
+
+                <input type="hidden" name="EXEC_TYPE" value="RELOAD">
+                <input type="hidden" name="TAG_LIST" id="TAG_LIST" value='$!{TAG_JSON}'>
+                <input type="hidden" name="NOW_PAGE" id="NOW_PAGE" value="1" />
+                </form>
+              </div>
+              <div class="card">
+                <div class="card-body">
+                  <div class="table-scroll-sm">
+                    <table class="table table-hover table-bordered mb-0">
+                      <thead class="thead-light">
+                        <tr>
+                          <th>名前</th>
+                          <th>メール連携状態</th>
+                          <th>登録日</th>
+                          <th>操作</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      #foreach( $!{friend} in $!{LINE_FRIEND_LIST})
+                        <tr>
+                          <td>
+                            <div class="d-flex align-items-center">
+                              <div class="c-avatar">
+                              #if( $!{friend.profile_image} != "" )
+                                <img class="c-avatar-img" src="$!{friend.profile_image}" alt="">
+                              #end
+                              </div>
+                              <div class="ml-2">$!{friend.display_name}</div>
+                            </div>
+                          </td>
+                          <td>
+                          #if( $!{friend.email} != "")
+                          	#if( $!{ASP_PLAN} == 1 || $!{ASP_PLAN} == 2 )
+	                          	<form method="POST" name="CONNECT_LIST" id="CONNECT_LIST$!{velocityCount}" action="https://${SERVER_DOMAIN}/${ACCOUNT}/admin/data_mng.php">
+	                          		<input type="hidden" name="email" value="$!{friend.email}">
+	                          		<input type="hidden" name="sbm" value="検索">
+	                          		<input type="hidden" name="linesearch" value="on">
+	                          		<input type="hidden" name="pid" value="0">
+	                          		<a href="javascript:connectListSubmit($!{velocityCount})">○</a>
+	                         		</form>
+                         		#elseif( $!{ASP_PLAN} == 4 )
+                         			<form method="POST" name="CONNECT_LIST" id="CONNECT_LIST$!{velocityCount}" action="https://${SERVER_DOMAIN}/${ACCOUNT}/admin/st_data_mng.php">
+	                          		<input type="hidden" name="email" value="$!{friend.email}">
+	                          		<input type="hidden" name="sbm" value="検索">
+	                          		<input type="hidden" name="linesearch" value="on">
+	                          		<input type="hidden" name="sno" value="0">
+	                          		<a href="javascript:connectListSubmit($!{velocityCount})">○</a>
+	                         		</form>
+                         		#elseif( $!{ASP_PLAN} == 6 )
+                         			<form method="POST" name="CONNECT_LIST" id="CONNECT_LIST$!{velocityCount}" action="https://${SERVER_DOMAIN}/admin/st_data_mng.php">
+	                          		<input type="hidden" name="email" value="$!{friend.email}">
+	                          		<input type="hidden" name="sbm" value="検索">
+	                          		<input type="hidden" name="linesearch" value="on">
+	                          		<input type="hidden" name="sno" value="0">
+	                          		<a href="javascript:connectListSubmit($!{velocityCount})">○</a>
+	                         		</form>
+                         		#else
+                         			○
+                         		#end
+                          #else
+                            ×
+                          #end
+                          </td>
+                          <td>
+                           　$format.date(${friend.create_date}, "yyyy/MM/dd HH:mm:ss")
+                          </td>
+                          <td>
+                          #if( $!{friend.state} != 3 )
+                            <a href="php2java.php?file=LIN0021&if=3&fid=$!{friend.friend_id}">
+                              <button type="button" class="btn btn-pill btn-sm btn-light">
+                                <i class="cil-comment-bubble"></i> 個別トーク
+                              </button>
+                            </a>
+                          #end
+                          </td>
+                        </tr>
+                       #end
+
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <div class="fixed-footer">
+                <div class="d-lg-flex col-12 align-items-center justify-content-end">
+                  <p class="font-weight-bold h6 mr-3">$!{PAGE_OBJ2.page_st}-$!{PAGE_OBJ2.page_ed}件 / $!{PAGE_OBJ2.total}件</p>
+                  <nav aria-label="...">
+                    <ul class="pagination justify-content-center">
+                    #if( $!{PAGE_OBJ2.current_page} > 1 )
+                    	#set( $prevPage = $!{PAGE_OBJ2.current_page} - 1 )
+                       <li class="page-item">
+                        <span class="page-link"  href="javascript:pageChange($prevPage);">前へ</span>
+                      </li>
+                    #else
+                      <li class="page-item disabled">
+                        <span class="page-link" href="#">前へ</span>
+                      </li>
+                    #end
+
+                    #set($index = $!{PAGE_OBJ2.loop_start} )
+                    #if( $!{PAGE_OBJ2.loop_end} > 1)
+                    	#foreach($!dummy in [$!{PAGE_OBJ2.loop_start}..$!{PAGE_OBJ2.loop_end}])
+                       	  #if( $index == $!{PAGE_OBJ2.current_page})
+	                       	  <li class="page-item active">
+	                          <span class="page-link">
+	                            $index
+	                            <span class="sr-only">(current)</span>
+	                          </span>
+	                          </li>
+                          #else
+                          	<li class="page-item"><a class="page-link" href="javascript:pageChange($index);">$index</a></li>
+                          #end
+                          #set( $index = $index+1 )
+	                   #end
+                    #end
+
+	                #if( $!{PAGE_OBJ2.total_page} == 1 )
+		               	<li class="page-item active">
+			                 <span class="page-link">
+			                   $!{PAGE_OBJ2.current_page}
+			                   <span class="sr-only">(current)</span>
+			                 </span>
+			            </li>
+	               	#end
+
+					#if( $!{PAGE_OBJ2.current_page} < $!{PAGE_OBJ2.total_page} )
+					  #set( $nextPage = $!{PAGE_OBJ2.current_page} + 1 )
+                      <li class="page-item">
+                        <a class="page-link" href="javascript:pageChange($nextPage);">次へ</a>
+                      </li>
+                    #else
+                      <li class="page-item disabled" >
+                        <a class="page-link" href="#">次へ</a>
+                      </li>
+                    #end
+                    </ul>
+                  </nav>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+	#parse( "include/c_footer.inc")
+    </div>
+
+    <!-- CoreUI and necessary plugins-->
+	#parse( "include/js.inc")
+	<script type="text/javascript">
+	$(document).ready(function(){
+
+		var date = new Date();
+
+		// 先月
+		$("#LAST_MONTH").on('click',function(){
+
+			// 先月
+			var last_month = new Date(date.getFullYear(), date.getMonth()-1, date.getDate());
+
+			// 先月末尾
+			var last_date = new Date(date.getFullYear(), date.getMonth(), 0);
+
+			// 先月　年
+			var last_year = last_month.getFullYear();
+
+
+			$("#CREATE_DATE_START").val( last_year + "/" + ("0" + (last_month.getMonth()+1)).slice(-2)  + "/" + "01" );
+			$("#CREATE_DATE_END").val( last_year + "/" + ("0" + (last_month.getMonth()+1)).slice(-2) + "/" + last_date.getDate())
+
+		});
+
+		// 今月
+		$("#THIS_MONTH").on('click',function(){
+
+			// 今月
+			var this_month = new Date(date.getFullYear(), date.getMonth()+1, date.getDate());
+
+			// 今月末尾
+			var this_date = new Date(date.getFullYear(), date.getMonth()+1, 0);
+
+			// 今月　年
+			var this_year = this_month.getFullYear();
+
+
+			$("#CREATE_DATE_START").val( this_year + "/" + ("0" + this_month.getMonth()).slice(-2)  + "/" + "01" );
+			$("#CREATE_DATE_END").val( this_year + "/" + ("0" + this_month.getMonth()).slice(-2) + "/" + this_date.getDate())
+		});
+
+		// 本日
+		$("#TODAY").on('click',function(){
+
+			//　今月
+			var this_month = new Date(date.getFullYear(), date.getMonth()+1, date.getDate());
+
+			// 今月　年
+			var this_year = this_month.getFullYear();
+
+			$("#CREATE_DATE_START").val( this_year + "/" + ("0" + this_month.getMonth()).slice(-2)  + "/" + date.getDate() );
+			$("#CREATE_DATE_END").val( this_year + "/" + ("0" + this_month.getMonth()).slice(-2) + "/" + date.getDate() )
+
+
+		});
+
+		initTagsSuggest();
+	});
+
+	function pageChange(page) {
+		var frm = document.getElementById("EXEC_FORM");
+		frm.NOW_PAGE.value = page;
+		frm.submit();
+	}
+
+	function connectListSubmit(number) {
+		var listForm = document.getElementById("CONNECT_LIST" + number);
+		listForm.submit();
+	}
+
+	</script>
+
+  </body>
+</html>

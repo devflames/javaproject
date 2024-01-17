@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+
+	<!-- テーブル生成 -->
+	<insert id="createLineAttributeTable">
+		CREATE TABLE
+			$SCHEMA$.line_attribute
+		LIKE
+			line_admin.tpl_line_attribute
+	</insert>
+
+	<!-- LINE友だちフォルダタグ中間テーブル -->
+	<select id="getLineAttributeFriendId" resultClass="dto.Entity.LineAttribute">
+		SELECT
+			GROUP_CONCAT(friend_id) as friend_id_list
+		FROM
+			$SCHEMA$.line_attribute
+		WHERE
+			line_account_id = #LINE_ACCOUNT_ID# AND
+			tag_id in (#TAG_ID#)
+	</select>
+
+	<!-- 友だちフォルダタグ情報 -->
+	<select id="getLineAttributeList" resultClass="dto.Entity.LineTag">
+		SELECT
+			T1.tag_id,
+			T1.parent_folder_id,
+			T1.tag_name
+		FROM
+			$SCHEMA$.line_tag T1
+		LEFT JOIN
+			$SCHEMA$.line_attribute T2
+		ON
+			T1.tag_id = T2.tag_id
+		WHERE
+			T2.line_account_id = #LINE_ACCOUNT_ID# AND
+			T2.friend_id = #FRIEND_ID#
+		ORDER BY
+			T1.sort_no DESC
+	</select>
+
+	<!-- 友だちフォルダタグ一括登録 -->
+	<insert id="addBulkLineAttribute" parameterClass="java.util.HashMap">
+		INSERT INTO
+		$SCHEMA$.line_attribute
+		(
+			line_account_id,
+			friend_id,
+			folder_id,
+			tag_id,
+			create_date,
+			update_date
+		) VALUES
+		<iterate property="AttributeMap" conjunction=",">
+				(
+						#AttributeMap[].line_account_id#,
+						#AttributeMap[].friend_id#,
+						#AttributeMap[].folder_id#,
+						#AttributeMap[].tag_id#,
+						NOW(),
+						NOW()
+				)
+		</iterate>
+				ON DUPLICATE KEY UPDATE
+				update_date = VALUES (update_date)
+	</insert>
+
+	<!-- 友だちフォルダタグ一括削除-->
+	<update id="deleteLineAttributeAll">
+		DELETE FROM
+			$SCHEMA$.line_attribute
+		WHERE
+			line_account_id = #LINE_ACCOUNT_ID# AND
+			friend_id = #FRIEND_ID#
+	</update>
+
+	<!-- 解除したアカウントに紐づくデータを削除-->
+	<delete id="cleanLineAttribute">
+		DELETE FROM
+			$SCHEMA$.line_attribute
+		WHERE
+			line_account_id = #LINE_ACCOUNT_ID#
+	</delete>
+
+</sqlMap>

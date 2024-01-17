@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+
+	<!-- キュー取得 -->
+	<select id="getLineQueCnt" resultClass="Integer">
+		SELECT
+			IFNULL(SUM(send_count),0)
+		FROM
+			line_admin.line_que
+		WHERE
+			send_datetime &gt;= now() AND
+			status = 5 AND
+			line_account_id = #LINE_ACCOUNT_ID#
+		ORDER BY
+			send_datetime ASC,
+			update_date ASC
+	</select>
+
+	<!-- 月間の予約数を取得 -->
+	<select id="getLineQueCnt2" resultClass="Integer">
+		SELECT
+			IFNULL(SUM(send_count),0)
+		FROM
+			line_admin.line_que
+		WHERE
+			<isNotEmpty property="QUE_ID">
+				NOT que_id = #QUE_ID# AND
+			</isNotEmpty>
+			send_datetime &gt;= now() AND
+			status = 5 AND
+			line_account_id = #LINE_ACCOUNT_ID# AND
+			DATE_FORMAT(send_datetime, '%Y/%m') = #SENDYM#
+		ORDER BY
+			send_datetime ASC,
+			update_date ASC
+	</select>
+
+	<!-- キュー取得 -->
+	<select id="getLineQue" resultClass="dto.Entity.LineQue">
+		SELECT
+			*
+		FROM
+			line_admin.line_que
+		WHERE
+		<isEqual property="TYPE" compareValue="1">
+			status &lt; 9
+		</isEqual>
+		<isEqual property="TYPE" compareValue="2">
+			status = 9
+		</isEqual>
+		ORDER BY
+			send_datetime ASC,
+			update_date ASC
+	</select>
+
+	<!-- キュー取得 -->
+	<select id="getLineQue2" resultClass="dto.Entity.LineQue">
+		SELECT
+			*
+		FROM
+			line_admin.line_que
+		WHERE
+			line_account_id = #LINE_ACCOUNT_ID# AND
+			que_id = #QUE_ID#
+
+	</select>
+
+	<select id="getLineQueList" resultClass="dto.Entity.LineQue">
+		SELECT
+			*
+		FROM
+			line_admin.line_que
+		WHERE
+			line_account_id = #LINE_ACCOUNT_ID#
+		ORDER BY
+			send_datetime DESC,
+			update_date DESC
+		LIMIT $LIMIT$
+	</select>
+
+	<!-- 予約中キュー取得 -->
+	<select id="getReserveLineQueList" resultClass="dto.Entity.LineQue">
+		SELECT
+			*
+		FROM
+			line_admin.line_que
+		WHERE
+			line_account_id = #LINE_ACCOUNT_ID# AND
+			send_type = #SEND_TYPE# AND
+			status in ('5', '8')
+		ORDER BY
+			send_datetime DESC,
+			update_date DESC
+	</select>
+
+	<!-- 配信済キュー取得 -->
+	<select id="getResultLineQueList" resultClass="dto.Entity.LineQue">
+		SELECT
+			*
+		FROM
+			line_admin.line_que
+		WHERE
+			line_account_id = #LINE_ACCOUNT_ID# AND
+			send_type = #SEND_TYPE# AND
+			status in ('9', '11')
+		ORDER BY
+			send_datetime DESC,
+			update_date DESC
+		LIMIT $LIMIT$
+	</select>
+
+	<!-- 月間配信数 -->
+	<select id="getSendCountFix" resultClass="Integer">
+		SELECT
+			IFNULL(SUM(send_count)-SUM(error_count), 0) as cnt
+		FROM
+			line_admin.line_que
+		WHERE
+			account = #ACCOUNT# AND
+			status &gt; 5 AND
+			DATE_FORMAT(send_datetime, '%Y/%m') = #SENDYM#
+	</select>
+
+	<!-- キュー情報登録 -->
+	<insert id="addLineQue">
+		INSERT INTO
+			line_admin.line_que
+		(
+			line_account_id,
+			account,
+			status,
+			send_datetime,
+			send_count,
+			xtraction_key,
+			count_query,
+			message1,
+			message2,
+			message3,
+			message4,
+			message5,
+			`schema`,
+			send_type,
+			create_date,
+			update_date
+		) VALUES (
+			#LINE_ACCOUNT_ID#,
+			#ACCOUNT#,
+			#STATUS#,
+		<isEqual property="SEND_TYPE" compareValue="1">
+			NOW(),
+		</isEqual>
+		<isEqual property="SEND_TYPE" compareValue="2">
+			#SEND_DATETIME#,
+		</isEqual>
+			#SEND_COUNT#,
+			#XTRACTION_KEY#,
+			#COUNT_QUERY#,
+			#MESSAGE1#,
+			#MESSAGE2#,
+			#MESSAGE3#,
+			#MESSAGE4#,
+			#MESSAGE5#,
+			#SCHEMA#,
+			#SEND_TYPE#,
+			current_timestamp(),
+			current_timestamp()
+		)
+	</insert>
+
+	<!-- キュー情報更新 -->
+	<insert id="updLineQue">
+		UPDATE
+			line_admin.line_que
+		SET
+			<isEqual property="SEND_TYPE" compareValue="1">
+				send_datetime = NOW(),
+			</isEqual>
+			<isEqual property="SEND_TYPE" compareValue="2">
+				send_datetime = #SEND_DATETIME#,
+			</isEqual>
+			send_count = #SEND_COUNT#,
+			xtraction_key = #XTRACTION_KEY#,
+			count_query = #COUNT_QUERY#,
+			message1 = #MESSAGE1#,
+			message2 = #MESSAGE2#,
+			message3 = #MESSAGE3#,
+			message4 = #MESSAGE4#,
+			message5 = #MESSAGE5#,
+			send_type = #SEND_TYPE#,
+			update_date = current_timestamp()
+		WHERE
+			que_id = #QUE_ID# AND
+			status = 5
+		<selectKey resultClass="java.lang.Integer">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+
+	<!-- キュー情報削除-->
+	<delete id="delLineQue">
+		DELETE FROM
+			line_admin.line_que
+		WHERE
+			line_account_id = #LINE_ACCOUNT_ID# AND
+			que_id = #QUE_ID#
+	</delete>
+
+	<!-- 予約中のキュー情報削除-->
+	<delete id="cleanLineQue">
+		DELETE FROM
+			line_admin.line_que
+		WHERE
+			line_account_id = #LINE_ACCOUNT_ID# AND
+			status  in ('5','9', '11')
+	</delete>
+
+
+</sqlMap>

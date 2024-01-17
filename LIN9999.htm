@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<!--
+* CoreUI Pro based Bootstrap Admin Template
+* @version v3.2.0
+* @link https://coreui.io/pro/
+* Copyright (c) 2020 creativeLabs Łukasz Holeczek
+* License (https://coreui.io/pro/license)
+-->
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="description" content="CoreUI - Open Source Bootstrap Admin Template">
+    <meta name="author" content="Łukasz Holeczek">
+    <meta name="keyword" content="Bootstrap,Admin,Template,Open,Source,jQuery,CSS,HTML,RWD,Dashboard">
+    <title>オートビズ管理画面</title>
+    <!-- Main styles for this application-->
+	#parse( "include/style.inc")
+  </head>
+  <body class="c-app">
+  #parse( "include/sidebar.inc")
+    <div class="c-wrapper">
+	#parse( "include/global_header.inc")
+      <div class="c-body">
+        <main class="c-main">
+          <div class="container-fluid">
+            <div class="fade-in">
+              <h1 class="h4 mb-3">
+              </h1>
+              <div class="alert alert-danger p-lg-5 p-sm-3 mb-3" role="alert">
+                <h4 class="alert-heading d-flex align-items-center justify-content-center mb-0">
+                  <i class="cil-warning h1 mr-2"></i>
+                  403 forbidden
+                </h4>
+              </div>
+              <p class="text-center mb-5">
+				ファイルを閲覧できる権限がありません
+              </p>
+              <!--
+              <div class="d-flex my-3 justify-content-center">
+                <a href="#">
+                  <button type="button" class="btn btn-secondary btn-lg mx-2 px-lg-5">〇〇に戻る</button>
+                </a>
+                <a href="#">
+                  <button type="button" class="btn btn-primary btn-lg mx-2 px-lg-5">〇〇をする</button>
+                </a>
+              </div>
+              -->
+              <div class="text-center mb-3">
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+ 	#parse( "include/c_footer.inc")
+    </div>
+    <!-- CoreUI and necessary plugins-->
+	#parse( "include/js.inc")
+
+  </body>
+</html>

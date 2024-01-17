@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<!--
+* CoreUI Pro based Bootstrap Admin Template
+* @version v3.2.0
+* @link https://coreui.io/pro/
+* Copyright (c) 2020 creativeLabs ?ukasz Holeczek
+* License (https://coreui.io/pro/license)
+-->
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="description" content="CoreUI - Open Source Bootstrap Admin Template">
+    <meta name="author" content="?ukasz Holeczek">
+    <meta name="keyword" content="Bootstrap,Admin,Template,Open,Source,jQuery,CSS,HTML,RWD,Dashboard">
+    <title>オートビズ管理画面</title>
+    <!-- Main styles for this application-->
+    #parse( "include/style.inc")
+  </head>
+
+  <body class="c-app">
+	#parse( "include/sidebar.inc")
+    <div class="c-sidebar c-sidebar-lg c-sidebar-light c-sidebar-right c-sidebar-overlaid bg-trans" id="aside">
+      <button class="c-sidebar-close c-class-toggler" type="button" data-target="_parent" data-class="c-sidebar-show" responsive="true">
+        <svg class="c-icon">
+          <use xlink:href="/-ui/vendors/@coreui/icons/svg/free.svg#cil-x"></use>
+        </svg>
+      </button>
+      <ul class="nav nav-tabs nav-underline nav-underline-primary" role="tablist">
+        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#price" role="tab">
+            メッセージ操作</a></li>
+      </ul>
+      <div class="tab-content">
+	      <div class="tab-pane p-3 active" id="price" role="tabpanel">
+	        <div class="mb-2">
+	          チェックした <span class="font-weight-bold text-danger" id="check_count">２件</span> のメッセージを
+	        </div>
+	        <div class="d-flex align-items-center w-100">
+	         <form method="POST" id="RESEND_FORM" action="php2java.php?file=LIN0033&if=3&QUE_ID=$!{QUE_ID}">
+	           <div class="mr-2">
+	             <input class="form-control datetimepicker" id="SEND_DATE" name="SEND_DATE" value="$!{SEND_DATE}" type="text" placeholder="送信日時">
+	           </div>
+	           <div class="mr-2">
+	             に
+	           </div>
+	           <button type="button" class="btn btn-primary" onclick="resendQue()">送信</button>
+	           <input type="hidden" name="RESEND_LOG_ID" id="RESEND_LOG_ID" value="">
+	           <input type="hidden" name="FRIEND_ID" id="FRIEND_ID" value="">
+	           <input type="hidden" name="COUNT_FRIEND_ID" id="COUNT_FRIEND_ID" value="">
+						<input type="hidden" name="EXEC_TYPE" id="EXEC_TYPE" value="RESEND_FORM">
+	          </form>
+	        </div>
+	        <hr>
+	      </div>
+	    </div>
+    </div>
+    <div class="c-wrapper">
+	#parse( "include/global_header.inc")
+      <div class="c-body">
+        <main class="c-main">
+          <div class="container-fluid">
+            <div class="fade-in">
+              <h1 class="h4 d-flex align-items-center mb-3">
+                <a href="php2java.php?file=LIN0030&if=3&type=2"><button type="button" class="btn-back"></button></a>
+                一斉配信メッセージ詳細
+              </h1>
+              <div class="lineTalkLayout is-compact mb-4">
+                <div class="lineTalkLayout__main">
+                  <div class="commentSummary">
+                    <div class="commentSummary__main">
+											$!{MESSAGE1}
+											$!{MESSAGE2}
+											$!{MESSAGE3}
+											$!{MESSAGE4}
+											$!{MESSAGE5}
+                    </div>
+                  </div>
+                </div>
+                <div class="lineTalkLayout__sub">
+                  <div class="profileSubCard">
+                    <div class="profileSubCard__title">
+                      予約ID
+                    </div>
+                    <div class="profileSubCard__body">
+                      $!{QUE_ID}
+                    </div>
+                    <hr>
+                    <div class="profileSubCard__title">
+                      予約日時
+                    </div>
+                    <div class="profileSubCard__body">
+                      $format.date($!{SEND_DATETIME}, "yyyy/MM/dd HH:mm:ss")
+                    </div>
+                    <hr>
+                    <div class="profileSubCard__title">
+                      完了日時
+                    </div>
+                    <div class="profileSubCard__body">
+                      $format.date($!{END_DATETIME}, "yyyy/MM/dd HH:mm:ss")
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header">
+                  <p class="h5 mb-0">配信結果一覧</p>
+                </div>
+                <div class="card-body">
+                  <div class="d-md-flex align-items-center justify-content-between mb-2">
+                    <div class="form-group d-flex mb-0">
+                      <label class="form-label mr-4" for="text-input">
+                        配信結果絞り込み
+                      </label>
+                      <div>
+	                      <form name="CHECK_FORM" id="CHECK_FORM" action="php2java.php?file=LIN0033&if=3&QUE_ID=${QUE_ID}#CHECK_FORM" method="POST">
+	                        <div class="form-check form-check-inline">
+	                          <input class="form-check-input" type="checkbox" name="STATUS_1" id="STATUS_1" value="checked" $!{STATUS_1}>
+	                          <label class="form-check-label " for="inlineRadio2">正常</label>
+	                        </div>
+	                        <div class="form-check form-check-inline">
+	                          <input class="form-check-input" type="checkbox" name="STATUS_2" id="STATUS_2" value="checked" $!{STATUS_2}>
+	                          <label class="form-check-label" for="inlineRadio2">エラー</label>
+	                        </div>
+	                        <input type="hidden" name="DISP_COUNT" value="$!{DISP_COUNT}">
+                        </form>
+                      </div>
+                    </div>
+                    <div>
+                      <select class="form-control" id="DISP_COUNT" name="DISP_COUNT">
+						#foreach( $!{obj} in ["100", "200", "500", "1000"] )
+							#if ( $!{DISP_COUNT} == $!{obj} )
+								<option value="$!{obj}" selected>$!{obj}件表示</option>
+							#else
+								<option value="$!{obj}">$!{obj}件表示</option>
+							#end
+						#end
+                      </select>
+                    </div>
+                  </div>
+                  <div class="table-scroll-sm">
+                    <table class="table table-hover table-bordered mb-0">
+                      <thead class="thead-light">
+                        <tr>
+                          <th style="width: 40px;">
+                            <input class="form-check-input position-static m-0" type="checkbox" id="tr-check-all" value="checked">
+                          </th>
+                          <th>友だち名</th>
+                          <th>配信結果</th>
+                          <th style="width: 22%;">エラー内容</th>
+                          <th>日時</th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        #foreach( $!{que_log} in $!{QUE_LOG_LIST})
+                        	<tr>
+	                          <td>
+	                            <div class="form-check">
+	                            	#if($!{que_log.resend_flg} == 0 && $que_log.status != 200 && $que_log.status != 400)
+	                              	<input class="form-check-input position-static tr-check" type="checkbox" value="$!{que_log.friend_id}" data-logid="$!{que_log.id}">
+	                              #else
+	                              	<input class="form-check-input position-static" type="checkbox" value="$!{que_log.friend_id}" data-logid="$!{que_log.id}"  disabled="disabled">
+                              	#end
+	                            </div>
+	                          </td>
+	                          <td>
+	                            $!{que_log.display_name}
+	                          </td>
+	                          <td>
+	                          	#if( $que_log.status == 200 )
+	                            	<span class="text-success"><i class="cil-check-alt"></i>正常</span>
+                            	#else
+                            		<span class="text-danger"><i class="cil-x"></i>$!{que.status} エラー</span>
+                           		#end
+	                          </td>
+	                          <td>
+	                            $!{que_log.error_message}
+	                          </td>
+	                          <td>
+	                            $format.date($!{que_log.create_date}, "yyyy/MM/dd HH:mm")
+	                          </td>
+	                          <td>
+	                          	#if(${que_log.resend_flg} == 0 && $que_log.status != 200 && $que_log.status != 400)
+		                          	<form method="POST" id="RESEND_NOW$!{velocityCount}" action="php2java.php?file=LIN0033&if=3&QUE_ID=$!{QUE_ID}">
+			                            <button type="button" class="btn btn-sm btn-primary" onclick="resendQueNow($!{velocityCount})">すぐに再送する</button>
+			                            <input type="hidden" name="RESEND_LOG_ID" id="RESEND_LOG_ID" value="$que_log.id">
+			                            <input type="hidden" name="FRIEND_ID" id="FRIEND_ID" value="$que_log.friend_id">
+																	<input type="hidden" name="COUNT_FRIEND_ID" id="COUNT_FRIEND_ID" value="1">
+																	<input type="hidden" name="EXEC_TYPE" id="EXEC_TYPE" value="RESEND_FORM">
+																</form>
+															#elseif(${que_log.resend_flg} == 1 && $que_log.status != 200 && $que_log.status != 400)
+																<button type="button" class="btn btn-sm btn-dark" style="pointer-events: none;">再送済</button>
+															#else
+
+															#end
+	                          </td>
+	                        </tr>
+                        #end
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <div class="fixed-footer">
+                <div class="d-lg-flex col-12 align-items-center justify-content-end">
+                  <p class="font-weight-bold h6 mr-3">$!{PAGE_OBJ2.page_st}-$!{PAGE_OBJ2.page_ed}件 / $!{PAGE_OBJ2.total}件</p>
+                  <nav aria-label="...">
+                    <ul class="pagination justify-content-center">
+                    #if( $!{PAGE_OBJ2.current_page} > 1 )
+                    	#set( $prevPage = $!{PAGE_OBJ2.current_page} - 1 )
+                       <li class="page-item">
+                        <a class="page-link"  href="javascript:pageChange($prevPage);">前へ</a>
+                      </li>
+                    #else
+                      <li class="page-item disabled">
+                        <span class="page-link" href="#">前へ</span>
+                      </li>
+                    #end
+
+                    #set($index = $!{PAGE_OBJ2.loop_start} )
+                    #if( $!{PAGE_OBJ2.loop_end} > 1)
+                    	#foreach($!dummy in [$!{PAGE_OBJ2.loop_start}..$!{PAGE_OBJ2.loop_end}])
+                       	  #if( $index == $!{PAGE_OBJ2.current_page})
+	                       	  <li class="page-item active">
+	                          <span class="page-link">
+	                            $index
+	                            <span class="sr-only">(current)</span>
+	                          </span>
+	                          </li>
+                          #else
+                          	<li class="page-item"><a class="page-link" href="javascript:pageChange($index);">$index</a></li>
+                          #end
+                          #set( $index = $index+1 )
+	                   #end
+                    #end
+
+	                #if( $!{PAGE_OBJ2.total_page} == 1 )
+		               	<li class="page-item active">
+			                 <span class="page-link">
+			                   $!{PAGE_OBJ2.current_page}
+			                   <span class="sr-only">(current)</span>
+			                 </span>
+			            </li>
+	               	#end
+
+					#if( $!{PAGE_OBJ2.current_page} < $!{PAGE_OBJ2.total_page} )
+					  #set( $nextPage = $!{PAGE_OBJ2.current_page} + 1 )
+                      <li class="page-item">
+                        <a class="page-link" href="javascript:pageChange($nextPage);">次へ</a>
+                      </li>
+                    #else
+                      <li class="page-item disabled" >
+                        <a class="page-link" href="#">次へ</a>
+                      </li>
+                    #end
+                    </ul>
+                  </nav>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+      <footer class="c-footer">
+        <div class="mfs-auto">c BizCreate,Inc.</div>
+      </footer>
+    </div>
+
+    <form name="EXEC_FORM" id="EXEC_FORM" action="php2java.php?file=LIN0033&if=3&QUE_ID=$!{QUE_ID}" method="POST">
+			<input type="hidden" name="EXEC_TYPE" id="EXEC_TYPE" value="RELOAD" />
+			<input type="hidden" name="sess" value="$!{SESSION_ID}">
+			<input type="hidden" name="NOW_PAGE" id="NOW_PAGE" value="" />
+		</form>
+
+    <!-- CoreUI and necessary plugins-->
+	#parse( "include/js.inc")
+	<script type="text/javascript">
+
+		$(function(){
+			$("#DISP_COUNT").change(function(){
+				var val = $(this).val();
+				$("input[name='DISP_COUNT']").val(val);
+				$("#CHECK_FORM").submit();
+			});
+		});
+
+		$(function(){
+			$("#STATUS_1").change(function(){
+				var val = $(this).val();
+				$("input[name='STATUS_1']").val(val);
+				$("#CHECK_FORM").submit();
+			});
+		});
+
+		$(function(){
+			$("#STATUS_2").change(function(){
+				var val = $(this).val();
+				$("input[name='STATUS_2']").val(val);
+				$("#CHECK_FORM").submit();
+			});
+		});
+
+		jQuery(document).ready(function() {
+
+			$('#tr-check-all').on('change',function(){
+
+		        if ($(this).prop('checked')) {
+			    	$('.tr-check').prop('checked',true);
+			    	var count = $('.tr-check:checked').length;
+			    	if(count == 0){return}
+
+			    	$('#check_count').empty().append(count + '件');
+			    	$('.tr-check').closest('tr').addClass('table-active');
+			    	$('#aside').addClass('c-sidebar-show');
+
+		        } else {
+
+		        	$('.tr-check').prop('checked',false);
+		        	$('.tr-check').closest('tr').removeClass('table-active')
+		        	$('#aside').removeClass('c-sidebar-show');
+
+		        }
+		    });
+		})
+
+		function resendQue(){
+			var vals = $('.tr-check:checked').map( function(){
+					return $(this).val();
+				}).get();
+
+			var vals2 = $('.tr-check:checked').map( function(){
+				return $(this).data('logid');
+			}).get();
+
+			var count = $('.tr-check:checked').length;
+			$("#COUNT_FRIEND_ID").val( count );
+			$("#FRIEND_ID").val( vals.join(",") );
+			$("#RESEND_LOG_ID").val( vals2.join(",") );
+			$("#RESEND_FORM").submit();
+		}
+
+		function resendQueNow(number){
+			$(`#RESEND_NOW${number}`).submit();
+		}
+
+		function pageChange(page) {
+			var frm = document.getElementById("EXEC_FORM");
+			frm.NOW_PAGE.value = page;
+			frm.submit();
+		}
+
+
+	</script>
+  </body>
+</html>

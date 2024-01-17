@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<!--
+* CoreUI Pro based Bootstrap Admin Template
+* @version v3.2.0
+* @link https://coreui.io/pro/
+* Copyright (c) 2020 creativeLabs ?ukasz Holeczek
+* License (https://coreui.io/pro/license)
+-->
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="description" content="CoreUI - Open Source Bootstrap Admin Template">
+    <meta name="author" content="?ukasz Holeczek">
+    <meta name="keyword" content="Bootstrap,Admin,Template,Open,Source,jQuery,CSS,HTML,RWD,Dashboard">
+    <title>オートビズ管理画面</title>
+    <!-- Main styles for this application-->
+	#parse( "include/style.inc")
+  </head>
+
+  <body class="c-app">
+	#parse( "include/sidebar.inc")
+    <div class="c-wrapper">
+	#parse( "include/global_header.inc")
+      <div class="c-body">
+        <main class="c-main">
+          <div class="container-fluid">
+            <div class="fade-in">
+              <h1 class="h4 d-flex align-items-center mb-3"><a href="php2java.php?file=LIN0030&if=3"><button type="button" class="btn-back"></button></a>下書メッセージ一覧</h1>
+
+              #if($!{ERR_MSG})
+              	<span id="ERR_MSG" style="color:red;font:bold 11pt 'MSP ゴシック';">$!{ERR_MSG}</span>
+             #end
+              <hr>
+
+              <div class="card">
+                <div class="card-body">
+
+                    <div class="table-scroll-sm">
+                      <table class="table table-hover table-bordered mb-0">
+                        <thead class="thead-light">
+                          <tr>
+                            <th width="10%">下書ID</th>
+                            <th width="40%">内容</th>
+                            <th width="40%">配信日時</th>
+                            <th width="10%">操作</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+
+						#foreach( $!{temp} in $!{TEMP_QUE_LIST} )
+                   			<tr>
+								<td><a href="php2java.php?file=LIN0032&if=3&EXEC_TYPE=DRAFT&TEMP_ID=$!{temp.temp_id}">$!{temp.temp_id}</a></td>
+								<td><a href="php2java.php?file=LIN0032&if=3&EXEC_TYPE=DRAFT&TEMP_ID=$!{temp.temp_id}">$!{temp.messageHtml()}</a></td>
+								<td>$!{temp.send_datetime}</td>
+								<td>
+									<a href="javascript:void(0);" data-toggle="modal" data-target="#delModal" onclick="del($!{temp.temp_id},1)">
+									<button type="button" class="btn btn-pill btn-sm btn-danger"><span class="cil-ban btn-icon mr-2"></span>削除</button>
+									</a>
+								</td>
+							</tr>
+						#end
+
+                        </tbody>
+                      </table>
+                    #if( $!{TEMP_QUE_LIST.size()} == 0 )
+                    	下書メッセージはありません。
+                    #end
+                    </div>
+
+
+                </div>
+              </div>
+
+              <form action="php2java.php?file=LIN0040&if=3" method="POST" name="EXEC_FORM" id="EXEC_FORM">
+                <input type="hidden" name="EXEC_TYPE" value="RELOAD">
+                <input type="hidden" name="NOW_PAGE" id="NOW_PAGE" value="1" />
+              </form>
+
+              <div class="fixed-footer" id="footer">
+                <div class="d-lg-flex col-12 align-items-center justify-content-end">
+                  <p class="font-weight-bold h6 mr-3">$!{PAGE_OBJ2.page_st}-$!{PAGE_OBJ2.page_ed}件 / $!{PAGE_OBJ2.total}件</p>
+                  <nav aria-label="...">
+                    <ul class="pagination justify-content-center">
+                    #if( $!{PAGE_OBJ2.current_page} > 1 )
+                    	#set( $prevPage = $!{PAGE_OBJ2.current_page} - 1 )
+                       <li class="page-item">
+                        <span class="page-link"  href="javascript:pageChange($prevPage);">前へ</span>
+                      </li>
+                    #else
+                      <li class="page-item disabled">
+                        <span class="page-link" href="#">前へ</span>
+                      </li>
+                    #end
+
+                    #set($index = $!{PAGE_OBJ2.loop_start} )
+                    #if( $!{PAGE_OBJ2.loop_end} > 1)
+                    	#foreach($!dummy in [$!{PAGE_OBJ2.loop_start}..$!{PAGE_OBJ2.loop_end}])
+                       	  #if( $index == $!{PAGE_OBJ2.current_page})
+	                       	  <li class="page-item active">
+	                          <span class="page-link">
+	                            $index
+	                            <span class="sr-only">(current)</span>
+	                          </span>
+	                          </li>
+                          #else
+                          	<li class="page-item"><a class="page-link" href="javascript:pageChange($index);">$index</a></li>
+                          #end
+                          #set( $index = $index+1 )
+	                   #end
+                    #end
+
+	                #if( $!{PAGE_OBJ2.total_page} == 1 )
+		               	<li class="page-item active">
+			                 <span class="page-link">
+			                   $!{PAGE_OBJ2.current_page}
+			                   <span class="sr-only">(current)</span>
+			                 </span>
+			            </li>
+	               	#end
+
+					#if( $!{PAGE_OBJ2.current_page} < $!{PAGE_OBJ2.total_page} )
+					  #set( $nextPage = $!{PAGE_OBJ2.current_page} + 1 )
+                      <li class="page-item">
+                        <a class="page-link" href="javascript:pageChange($nextPage);">次へ</a>
+                      </li>
+                    #else
+                      <li class="page-item disabled" >
+                        <a class="page-link" href="#">次へ</a>
+                      </li>
+                    #end
+                    </ul>
+                  </nav>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </main>
+      </div>
+      <footer class="c-footer">
+        <div class="mfs-auto">c BizCreate,Inc.</div>
+      </footer>
+    </div>
+
+    <!-- 削除 確認 モーダル -->
+    <div class="modal fade" id="delModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="listSettingModal">下書メッセージ削除</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group row" id="DEL_LABEL"></div>
+          </div>
+          <div class="modal-footer">
+          <form action="php2java.php?file=LIN0040&if=3" method="POST">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">キャンセル</button>
+            <button type="submit" class="btn btn-primary">OK</button>
+            <input type="hidden" id="DEL_ID" name="ID" value="">
+            <input type="hidden" id="EXEC_TYPE" name="EXEC_TYPE" value="">
+          </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CoreUI and necessary plugins-->
+	#parse( "include/js.inc")
+
+	<script type="text/javascript">
+	$(document).ready(function(){
+
+		$(function(){
+			setTimeout(function(){
+				$('#ERR_MSG').fadeOut( 2000 )
+			},6000);
+		});
+
+	});
+
+	// 削除モーダル
+	function del(id){
+
+			var id_str = "下書ID:" + id + "を削除します。よろしいですか？";
+			$("#DEL_LABEL").text(id_str);
+			$("#DEL_ID").val(id);
+			$("#EXEC_TYPE").val("TEMP_DEL");
+
+	}
+
+	function pageChange(page) {
+		var frm = document.getElementById("EXEC_FORM");
+		frm.NOW_PAGE.value = page;
+		frm.submit();
+	}
+
+	</script>
+
+  </body>
+</html>

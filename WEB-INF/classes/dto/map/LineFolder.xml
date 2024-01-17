@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+
+	<!-- テーブル生成 -->
+	<insert id="createLineFolderTable">
+		CREATE TABLE
+			$SCHEMA$.line_folder
+		LIKE
+			line_admin.tpl_line_folder
+	</insert>
+
+	<select id="getLineFolderList" resultClass="dto.Entity.LineFolder">
+		SELECT
+			T1.folder_id,
+			T1.folder_name,
+			IFNULL(T1.sort_no,0) as folder_sort_no,
+			IFNULL(T2.tag_id, 0) as tag_id,
+			T2.tag_name,
+			IFNULL(T2.sort_no,0) as tag_sort_no,
+			T2.create_date
+		FROM
+			$SCHEMA$.line_folder T1
+		LEFT JOIN
+			(SELECT
+					tag_id,
+					parent_folder_id,
+					tag_name,
+					sort_no,
+					create_date,
+					del_flg
+				FROM
+					$SCHEMA$.line_tag
+				WHERE
+					del_flg = 0
+			) AS T2
+		ON
+			T1.folder_id = T2.parent_folder_id
+		WHERE
+		<isNotEmpty property="FOLDER_ID" close="AND">
+			T1.folder_id = #FOLDER_ID#
+		</isNotEmpty>
+			T1.line_account_id = #LINE_ACCOUNT_ID#  AND
+			T1.del_flg = 0 AND
+		<isEqual property="NOT_NULL_TAG_NAME" compareValue="1" close="AND">
+			T2.tag_name is not NULL
+		</isEqual>
+			T2.del_flg is NULL OR T2.del_flg = 0
+		ORDER BY
+			T1.sort_no DESC,T2.sort_no DESC
+	</select>
+
+	<select id="getLineFolderList2" resultClass="dto.Entity.LineFolder">
+		SELECT
+			T1.folder_id,
+			T1.folder_name,
+			IFNULL(T1.sort_no,0) as folder_sort_no,
+			IFNULL(T2.tag_id, 0) as tag_id,
+			T2.tag_name,
+			IFNULL(T2.sort_no,0) as tag_sort_no,
+			T2.create_date
+		FROM
+			$SCHEMA$.line_folder T1
+		LEFT JOIN
+			$SCHEMA$.line_tag T2
+		ON
+			T1.folder_id = T2.parent_folder_id
+		WHERE
+		<isNotEmpty property="FOLDER_ID" close="AND">
+			T1.folder_id = #FOLDER_ID#
+		</isNotEmpty>
+			tag_id in ($TAG_ID_LIST$) AND
+			T1.line_account_id = #LINE_ACCOUNT_ID#  AND
+			T1.del_flg = 0 AND
+			T2.del_flg = 0
+		ORDER BY
+			T1.sort_no DESC,T2.sort_no DESC
+	</select>
+
+	<select id="getCountLineFolder" resultClass="Integer">
+		SELECT
+			COUNT(folder_id)
+		FROM
+			$SCHEMA$.line_folder
+		WHERE
+			line_account_id = #LINE_ACCOUNT_ID#  AND
+			del_flg = 0
+	</select>
+
+	<!-- フォルダ名の重複チェック -->
+	<select id="getCheckLineFolder" resultClass="Integer">
+		SELECT
+			COUNT(folder_id)
+		FROM
+			$SCHEMA$.line_folder
+		WHERE
+			folder_name = #FOLDER_NAME#  AND
+			<isNotEmpty property="FOLDER_ID" close="AND">
+				folder_id != #FOLDER_ID#
+			</isNotEmpty>
+			del_flg = 0
+	</select>
+
+
+	<!-- フォルダ名の更新 -->
+	<update id="updLineFolder">
+		UPDATE
+			$SCHEMA$.line_folder
+		SET
+			folder_name = #FOLDER_NAME#
+		WHERE
+			line_account_id = #LINE_ACCOUNT_ID# AND
+			folder_id = #FOLDER_ID#
+	</update>
+
+	<!-- フォルダのソート順変更 -->
+	<update id="updLineFolderSort">
+		UPDATE
+			$SCHEMA$.line_folder
+		SET
+			sort_no = ( CASE $SQL_SORT$ )
+		WHERE
+			line_account_id = #LINE_ACCOUNT_ID# AND
+			del_flg = 0
+	</update>
+
+	<!-- フォルダの登録 -->
+	<insert id="addLineFolder">
+		INSERT INTO
+			$SCHEMA$.line_folder
+		(
+			line_account_id,
+			folder_name,
+			sort_no,
+			create_date,
+			update_date
+		) VALUES (
+			#LINE_ACCOUNT_ID#,
+			#FOLDER_NAME#,
+			#SORT_NO#,
+			current_timestamp(),
+			current_timestamp()
+		)
+	</insert>
+
+	<!-- フォルダの削除 -->
+	<update id="delLineFolder">
+		UPDATE
+			$SCHEMA$.line_folder
+		SET
+			del_flg = 1,
+			update_date = NOW()
+		WHERE
+			line_account_id = #LINE_ACCOUNT_ID# AND
+			folder_id = #FOLDER_ID#
+	</update>
+
+	<!-- フォルダの削除 解除-->
+	<delete id="cleanLineFolder">
+		DELETE FROM
+			$SCHEMA$.line_folder
+		WHERE
+			line_account_id = #LINE_ACCOUNT_ID#
+	</delete>
+
+	<!-- フォルダのソート番号最大値取得 -->
+	<select id="getMaxFolderSortNo" resultClass="Integer">
+		SELECT
+			IFNULL(MAX(sort_no),0)
+		FROM
+			$SCHEMA$.line_folder
+		WHERE
+			line_account_id = #LINE_ACCOUNT_ID# AND
+			del_flg = 0
+	</select>
+
+
+
+</sqlMap>

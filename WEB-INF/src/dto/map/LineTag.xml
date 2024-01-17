@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+
+	<!-- テーブル生成 -->
+	<insert id="createLineTagTable">
+		CREATE TABLE
+			$SCHEMA$.line_tag
+		LIKE
+			line_admin.tpl_line_tag
+	</insert>
+
+	<!-- タグの削除 -->
+	<update id="delLineTag">
+		UPDATE
+			$SCHEMA$.line_tag
+		SET
+			del_flg = 1,
+			update_date = NOW()
+		WHERE
+			tag_id = #TAG_ID#
+	</update>
+
+	<!-- タグの削除 解除-->
+	<delete id="cleanLineTag">
+		DELETE FROM
+			$SCHEMA$.line_tag
+		WHERE
+			line_account_id = #LINE_ACCOUNT_ID#
+	</delete>
+
+	<!-- タグの削除 (フォルダに紐づく)-->
+	<update id="delLineTagAll">
+		UPDATE
+			$SCHEMA$.line_tag
+		SET
+			del_flg = 1,
+			update_date = NOW()
+		WHERE
+			line_account_id = #LINE_ACCOUNT_ID# AND
+			parent_folder_id = #FOLDER_ID#
+	</update>
+
+	<select id="getCountLineTag" resultClass="Integer">
+		SELECT
+			COUNT(tag_id)
+		FROM
+			$SCHEMA$.line_tag
+		WHERE
+			line_account_id = #LINE_ACCOUNT_ID#  AND
+			parent_folder_id = #PARENT_FOLDER_ID# AND
+			del_flg = 0
+	</select>
+
+	<!-- タグ名の重複チェック -->
+	<select id="getCheckLineTag" resultClass="Integer">
+		SELECT
+			COUNT(tag_id)
+		FROM
+			$SCHEMA$.line_tag
+		WHERE
+			tag_name = #TAG_NAME#  AND
+			<isNotEmpty property="TAG_ID" close="AND">
+				tag_id != #TAG_ID#
+			</isNotEmpty>
+			del_flg = 0
+	</select>
+
+	<!-- タグのソート番号最大値取得 -->
+	<select id="getMaxTagSortNo" resultClass="Integer">
+		SELECT
+			IFNULL(MAX(sort_no),0)
+		FROM
+			$SCHEMA$.line_tag
+		WHERE
+			line_account_id = #LINE_ACCOUNT_ID# AND
+			parent_folder_id = #PARENT_FOLDER_ID# AND
+			del_flg = 0
+	</select>
+
+	<!-- タグ名の更新 -->
+	<update id="updLineTag">
+		UPDATE
+			$SCHEMA$.line_tag
+		SET
+			tag_name = #TAG_NAME#
+		WHERE
+			line_account_id = #LINE_ACCOUNT_ID# AND
+			tag_id = #TAG_ID#
+	</update>
+
+	<!-- タグのソート順変更 -->
+	<update id="updLineTagSort">
+		UPDATE
+			$SCHEMA$.line_tag
+		SET
+			sort_no = ( CASE $SQL_SORT$ )
+		WHERE
+			line_account_id = #LINE_ACCOUNT_ID# AND
+			del_flg = 0
+	</update>
+
+	<!-- タグ追加 -->
+	<insert id="addLineTag">
+		INSERT INTO
+			$SCHEMA$.line_tag
+		(
+			line_account_id,
+			parent_folder_id,
+			tag_name,
+			sort_no,
+			create_date,
+			update_date
+		) VALUES (
+			#LINE_ACCOUNT_ID#,
+			#PARENT_FOLDER_ID#,
+			#TAG_NAME#,
+			#SORT_NO#,
+			NOW(),
+			NOW()
+		)
+		<selectKey resultClass="java.lang.Integer">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+
+
+</sqlMap>

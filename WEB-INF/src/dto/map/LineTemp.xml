@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+
+	<!-- テーブル生成 -->
+	<insert id="createLineTempTable">
+		CREATE TABLE
+			$SCHEMA$.line_temp
+		LIKE
+			line_admin.tpl_line_temp
+	</insert>
+
+	<!-- 下書情報取得(1件) -->
+	<select id="getLineTemp" resultClass="dto.Entity.LineTemp">
+		SELECT
+			*
+		FROM
+			$SCHEMA$.line_temp
+		WHERE
+			line_account_id = #LINE_ACCOUNT_ID# AND
+			temp_id = #TEMP_ID#
+	</select>
+
+	<!-- 下書情報取得 -->
+	<select id="getTempQueList" resultClass="dto.Entity.LineTemp">
+		SELECT
+			*
+		FROM
+			$SCHEMA$.line_temp
+		WHERE
+			line_account_id = #LINE_ACCOUNT_ID#
+		ORDER BY
+			send_datetime ASC,
+			temp_id ASC
+		<dynamic prepend="LIMIT">
+			<isNotEmpty property="START">
+				$START$,
+			</isNotEmpty>
+			<isNotEmpty property="LIMIT">
+				$LIMIT$
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 下書　カウント数 -->
+	<select id="getTempQueCount" resultClass="Integer">
+		SELECT
+			COUNT(temp_id)
+		FROM
+			$SCHEMA$.line_temp
+		WHERE
+			line_account_id = #LINE_ACCOUNT_ID#
+	</select>
+
+	<!-- 下書情報登録 -->
+	<insert id="addLineTemp">
+		INSERT INTO
+			$SCHEMA$.line_temp
+		(
+			line_account_id,
+			account,
+			send_datetime,
+			xtraction_key,
+			count_query,
+			message1,
+			message2,
+			message3,
+			message4,
+			message5,
+			create_date,
+			update_date
+		) VALUES (
+			#LINE_ACCOUNT_ID#,
+			#ACCOUNT#,
+		<isEqual property="SEND_TYPE" compareValue="1">
+			NOW(),
+		</isEqual>
+		<isEqual property="SEND_TYPE" compareValue="2">
+			#SEND_DATETIME#,
+		</isEqual>
+			#XTRACTION_KEY#,
+			#COUNT_QUERY#,
+			#MESSAGE1#,
+			#MESSAGE2#,
+			#MESSAGE3#,
+			#MESSAGE4#,
+			#MESSAGE5#,
+			current_timestamp(),
+			current_timestamp()
+		)
+		<selectKey resultClass="java.lang.Integer">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+
+	<!-- 下書情報更新 -->
+	<insert id="updLineTemp">
+		UPDATE
+			$SCHEMA$.line_temp
+		SET
+			<isEqual property="SEND_TYPE" compareValue="1">
+				send_datetime = NOW(),
+			</isEqual>
+			<isEqual property="SEND_TYPE" compareValue="2">
+				send_datetime = #SEND_DATETIME#,
+			</isEqual>
+			xtraction_key = #XTRACTION_KEY#,
+			count_query = #COUNT_QUERY#,
+			message1 = #MESSAGE1#,
+			message2 = #MESSAGE2#,
+			message3 = #MESSAGE3#,
+			message4 = #MESSAGE4#,
+			message5 = #MESSAGE5#,
+			update_date = current_timestamp()
+		WHERE
+			temp_id = #TEMP_ID#
+	</insert>
+
+	<!-- 下書情報削除-->
+	<delete id="delLineTemp">
+		DELETE FROM
+			$SCHEMA$.line_temp
+		WHERE
+			line_account_id = #LINE_ACCOUNT_ID# AND
+			temp_id = #TEMP_ID#
+	</delete>
+
+	<!-- 解除したアカウントに紐づくデータを削除-->
+	<delete id="cleanLineTemp">
+		DELETE FROM
+			$SCHEMA$.line_temp
+		WHERE
+			line_account_id = #LINE_ACCOUNT_ID#
+	</delete>
+
+</sqlMap>

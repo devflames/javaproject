@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<!--
+* CoreUI Pro based Bootstrap Admin Template
+* @version v3.2.0
+* @link https://coreui.io/pro/
+* Copyright (c) 2020 creativeLabs ?ukasz Holeczek
+* License (https://coreui.io/pro/license)
+-->
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="description" content="CoreUI - Open Source Bootstrap Admin Template">
+    <meta name="author" content="?ukasz Holeczek">
+    <meta name="keyword" content="Bootstrap,Admin,Template,Open,Source,jQuery,CSS,HTML,RWD,Dashboard">
+    <title>オートビズ管理画面</title>
+    <!-- Main styles for this application-->
+	#parse( "include/style.inc")
+  </head>
+
+  <body class="c-app">
+	#parse( "include/sidebar.inc")
+    <div class="c-wrapper">
+	#parse( "include/global_header.inc")
+      <div class="c-body">
+        <main class="c-main">
+          <div class="container-fluid">
+          <form action="php2java.php?file=LIN0011ST4&if=3" method="POST">
+            <div class="fade-in">
+              <div class="mb-4 d-flex align-items-center justify-content-between">
+	              <h1 class="h4 mb-3">
+	                LINE連携設定
+	              </h1>
+	              <div>
+	                <a href="javascript:void(0);" data-toggle="modal" data-target="#resetModal">
+	                  <button class="btn btn-danger btn-sm" id="RESET">
+	                    設定をやり直す
+	                  </button>
+	                </a>
+	              </div>
+              </div>
+              <ol class="stepper my-4">
+                <li class="stepper__item is-completed">
+                  <div class="step-counter">1</div>
+                  <div class="step-name">LINE公式アカウントの設定</div>
+                </li>
+                <li class="stepper__item is-completed">
+                  <div class="step-counter">2</div>
+                  <div class="step-name">受信設定</div>
+                </li>
+                <li class="stepper__item is-completed is-active">
+                  <div class="step-counter">3</div>
+                  <div class="step-name">LINEログインチャネル設定</div>
+                </li>
+                <li class="stepper__item">
+                  <div class="step-counter">4</div>
+                  <div class="step-name">その他</div>
+                </li>
+              </ol>
+              #if ( $!{ERR_MSG} )
+                <div style="color:red;font:bold 11pt 'MSP ゴシック';">$!{ERR_MSG}</div>
+              #end
+              <div class="card mb-0">
+                <div class="card-body">
+                  <div class="form-group">
+                    <div class="h5">
+                      1. LINEログインチャネルの開設
+                    </div>
+                    <div>
+                    #if( $!{ASP_PLAN} == 2 )
+                    	#set( $url = "https://autobiz.help/basic/kanri/line/archives/31234/#STEP5" )
+                    #elseif( $!{ASP_PLAN} == 4 )
+                    	#set( $url = "https://autobiz.help/pro/kanri/line/archives/33446/#STEP5")
+                    #else
+                    	#set( $url ="https://autobiz.help/basic/kanri/line/archives/31234/#STEP5")
+                    #end
+                      <a href="$!{url}" taget="_blank"><button class="btn btn-pill btn-sm btn-secondary" type="button">LINEログインチャネルの開設方法はこちら</button></a>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="h5 mb-4">
+                    2. LINEログインチャネル情報の登録
+                  </div>
+                  <div class="row form-group">
+                    <label class="form-label col-lg-3" for="text-input">
+                      LINEログインチャネルID<span class="badge bg-primary text-white ml-2">必須</span>
+                    </label>
+                    <div class="col-lg-9">
+                      <input class="form-control" id="LOGIN_CHANEL_ID" type="text" name="LOGIN_CHANEL_ID" required placeholder="">
+                    </div>
+                  </div>
+                  <div class="row form-group">
+                    <label class="form-label col-lg-3" for="text-input">
+                      LINEログインチャネルシークレット<span class="badge bg-primary text-white ml-2">必須</span>
+                    </label>
+                    <div class="col-lg-9">
+                      <input class="form-control" id="LOGIN_CHANEL_SECRET" type="text" name="LOGIN_CHANEL_SECRET" required placeholder="">
+                    </div>
+                  </div>
+                  <div>
+                    <img class="img-fluid" src="https://tls24.net/LineAutoBiz/-ui/assets/img/sample.jpg" alt="">
+                  </div>
+
+                </div>
+                <div class="card-footer">
+                  <div class="text-center py-2">
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" value="" id="defaultCheck">
+                      <label class="form-check-label" for="defaultCheck">
+                        LINEログインチャネルを「公開済み」に設定しました
+                      </label>
+                    </div>
+                  </div>
+                  <div class="d-flex my-3 justify-content-center">
+                  #if( $!{ROUTE} == "REGULAR" )
+                    <button type="button" class="btn btn-secondary btn-lg mx-2 px-lg-5" id="BACK_BTN">戻る</button>
+                  #end
+                    <button type="submit" class="btn btn-primary btn-lg mx-2 px-lg-5" id="COMMIT">LINEログインチャネルを登録する</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <input type="hidden" name="EXEC_TYPE" value="ADD">
+
+            <input type="hidden" name="DISPLAY_NAME" value="$!{DISPLAY_NAME}">
+            <input type="hidden" name="BASIC_ID" value="$!{BASIC_ID}">
+            <input type="hidden" name="CHANEL_ID" value="$!{CHANEL_ID}">
+            <input type="hidden" name="CHANEL_SECRET" value="$!{CHANEL_SECRET}">
+            <input type="hidden" name="CHANEL_ACCESS_TOKEN" value="$!{CHANEL_ACCESS_TOKEN}">
+            </form>
+            <form method="post" action="php2java.php?file=LIN0011ST2&if=3" id="BACK">
+            	<input type="hidden" name="DISPLAY_NAME" value="$!{DISPLAY_NAME}">
+            	<input type="hidden" name="BASIC_ID" value="$!{BASIC_ID}">
+            	<input type="hidden" name="CHANEL_ID" value="$!{CHANEL_ID}">
+            	<input type="hidden" name="CHANEL_SECRET" value="$!{CHANEL_SECRET}">
+            	<input type="hidden" name="CHANEL_ACCESS_TOKEN" value="$!{CHANEL_ACCESS_TOKEN}">
+           </form>
+          </div>
+        </main>
+      </div>
+	#parse( "include/c_footer.inc")
+    </div>
+
+    <div class="modal fade" id="resetModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="listSettingModal">LINE連携設定を最初からやり直します。</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group" id="DEL_LABEL">
+             #if( $!{RESET_CHECK_FLG} == 1 )
+             	<span style="color:#E74C3C; font-weight: bold;">　応答設定「Webhook」の設定がonになっています。</span><br><br>
+             #end
+            	　<a href="https://manager.line.biz/account/$!{BASIC_ID}/setting/response" class="" target="_blank">応答設定「Webhook」</a>の設定をoffに変更後
+            	[やり直す]を押してください。
+            	#if( $!{ASP_PLAN} == 2 )
+	            	#set( $url = "https://autobiz.help/basic/kanri/line/archives/33122/#off" )
+            	#elseif( $!{ASP_PLAN} == 4 )
+	            	#set( $url = "https://autobiz.help/pro/kanri/line/archives/34789/#off")
+            	#else
+	            	#set( $url ="https://autobiz.help/basic/kanri/line/archives/33122/#off")
+            	#end
+            	<a href="$!{url}" target="_BLANK">
+            		<i class="help-button">?</i>
+           		</a>
+            </div>
+          </div>
+          <div class="modal-footer">
+          <form action="php2java.php?file=LIN0011ST1&if=3" method="POST">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">キャンセル</button>
+            <button type="submit" id="RESET_BUTTON"  class="btn btn-primary">やり直す</button>
+            <input type="hidden" id="FILE_NAME" name="FILE_NAME" value="LIN0011ST3.htm">
+            <input type="hidden" name="EXEC_TYPE" value="RESET">
+          </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- CoreUI and necessary plugins-->
+	#parse( "include/js.inc")
+    <script type="text/javascript">
+	$(document).ready(function(){
+
+		// 初期　非表示
+		$("#COMMIT").hide();
+
+		$("#defaultCheck").click(function(){
+			if( $("#defaultCheck").prop("checked") == true ){
+				$("#COMMIT").show();
+			} else {
+				$("#COMMIT").hide();
+			}
+
+		})
+
+		$("#BACK_BTN").click(function(){
+			$("#BACK").submit();
+		})
+
+		#if( $!{RESET_CHECK_FLG} == 1)
+			  $('#RESET').trigger("click");
+		 #end
+	})
+    </script>
+
+  </body>
+</html>

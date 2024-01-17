@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<!--
+* CoreUI Pro based Bootstrap Admin Template
+* @version v3.2.0
+* @link https://coreui.io/pro/
+* Copyright (c) 2020 creativeLabs Łukasz Holeczek
+* License (https://coreui.io/pro/license)
+-->
+
+<html lang="ja">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+  <meta name="description" content="CoreUI - Open Source Bootstrap Admin Template">
+  <meta name="author" content="Łukasz Holeczek">
+  <meta name="keyword" content="Bootstrap,Admin,Template,Open,Source,jQuery,CSS,HTML,RWD,Dashboard">
+  <title>オートビズ管理画面</title>
+    <!-- Main styles for this application-->
+    #parse( "include/style.inc")
+</head>
+
+<body class="c-app">
+    #parse( "include/sidebar.inc")
+  <div class="c-wrapper">
+  	#parse( "include/global_header.inc")
+    <div class="c-body">
+      <main class="c-main">
+        <div class="container-fluid">
+          <div class="fade-in">
+            <h1 class="h4 d-flex align-items-center mb-3">
+              LINE連携
+            </h1>
+              #if( $!{WARNING} == 1 )
+              <div class="alert alert-danger" role="alert">
+              	<h4 class="alert-heading h5 mb-0">配信制限数の90%以上に達しました</h4>
+              </div>
+              #else
+
+              #end
+            <div class="row">
+              <div class="col-sm-6 col-md-3">
+                <div class="card">
+                  <div class="card-header bg-light d-flex bg-light align-items-center justify-content-between">
+                    <div class="mr-2">
+                      友だち
+                    </div>
+                    <div class="text-muted">
+                      <svg class="c-icon c-icon-xl">
+                        <use xlink:href="/-ui/vendors/@coreui/icons/svg/free.svg#cil-people"></use>
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <div class="text-value-lg">$format.decimal($!{LINE_FRIEND.friend_count}, "N,NN0") <small>人</small></div>
+                    <div class="progress progress-xs mt-3 my-2">
+
+                    </div>
+                    #set( $block = $!{LINE_FRIEND.active_block} + $!{LINE_FRIEND.negative_block})
+                    <small class="text-danger">ブロック：$block人（相手から:$!{LINE_FRIEND.negative_block}人 自分から$!{LINE_FRIEND.active_block}人）</small>
+                  </div>
+                </div>
+              </div>
+              <!-- /.col-->
+              <div class="col-sm-6 col-md-3">
+                <div class="card">
+                  <div class="card-header bg-light d-flex bg-light align-items-center justify-content-between">
+                    <div class="mr-2">
+                      未対応の友だち件数
+                    </div>
+                    <div class="text-muted">
+                      <svg class="c-icon c-icon-xl">
+                        <use xlink:href="/-ui/vendors/@coreui/icons/svg/free.svg#cil-check-circle"></use>
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <div class="text-value-lg">$!{LINE_FRIEND.not_support} <small>件</small></div>
+                    <div class="progress progress-xs mt-3 mb-0">
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- /.col-->
+              <div class="col-sm-6 col-md-3">
+                <div class="card">
+                  <div class="card-header bg-light d-flex bg-light align-items-center justify-content-between">
+                    <div class="mr-2">
+                      無料メッセージ通数
+                    </div>
+                    <div class="text-muted">
+                      <svg class="c-icon c-icon-xl">
+                        <use xlink:href="/-ui/vendors/@coreui/icons/svg/free.svg#cil-paper-plane"></use>
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                  	#if( $!{LIMIT} == 0  )
+                  	<div class="text-value-lg">	- </div>
+                  	<div class="progress progress-xs mt-3 mb-0">
+                      <div class="progress-bar bg-gradient-success" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  	#else
+                    <div class="text-value-lg"><a href="https://manager.line.biz/account/$!{BASIC_ID}/purchase" target="_blank"><small>残り：</small>$format.decimal($!{FREE_MESSAGE}, "N,NN0")</a></div>
+                    <div class="progress progress-xs mt-3 mb-0">
+                      <div class="progress-bar bg-gradient-success" role="progressbar" style="width: $!{PERCENTAGE}%" aria-valuenow="$!{PERCENTAGE}" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    #end
+                    <small>正確なメッセージ送信数はLINE developersをご覧下さい</small>
+                  </div>
+                </div>
+              </div>
+              <!-- /.col-->
+              <div class="col-sm-6 col-md-3">
+                <div class="card">
+                  <div class="card-header bg-light d-flex bg-light align-items-center justify-content-between">
+                    <div class="mr-2">
+                      予約中のメッセージ件数
+                    </div>
+                    <div class="text-muted">
+                      <svg class="c-icon c-icon-xl">
+                        <use xlink:href="/-ui/vendors/@coreui/icons/svg/free.svg#cil-calendar-check"></use>
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <div class="text-value-lg">
+                    	#if( $!{QUE_CNT} > 0 )
+                    	<a href="php2java.php?file=LIN0030&if=3">$!{QUE_CNT} <small>件</small></a>
+                    	#else
+                    	$!{QUE_CNT} <small>件</small>
+                    	#end
+                    </div>
+                    <div class="progress progress-xs mt-3 mb-0">
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- /.col-->
+            </div>
+            <div class="card mb-0">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-lg">
+                    <div class="card">
+                      <div class="card-header bg-light">
+                        メッセージ
+                      </div>
+                      <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                          <a href="php2java.php?file=LIN0030&if=3" class="list-group-item list-group-item-action">LINE一斉配信メッセージ</a>
+                          <!--
+                          <a href="#" class="list-group-item list-group-item-action">ステップ配信</a>
+                          <a href="#" class="list-group-item list-group-item-action">テンプレート</a>
+                          -->
+                          <a href="php2java.php?file=LIN0070&if=3" class="list-group-item list-group-item-action">友だち追加時設定</a>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg">
+                    <div class="card">
+                      <div class="card-header bg-light">
+                        友だち管理
+                      </div>
+                      <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                          <a href="php2java.php?file=LIN0020&if=3" class="list-group-item list-group-item-action">LINE友だちリスト</a>
+                          <a href="php2java.php?file=LIN0021&if=3" class="list-group-item list-group-item-action">LINE個別トーク</a>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="card">
+                      <div class="card-header bg-light">
+                        データ管理
+                      </div>
+                      <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                          <a href="php2java.php?file=LIN0060&if=3" class="list-group-item list-group-item-action">タグ管理</a>
+                        </ul>
+                      </div>
+                    </div>
+                    <div class="card">
+                      <div class="card-header bg-light">
+                        アカウント設定
+                      </div>
+                      <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                          <a href="php2java.php?file=LIN0011ST1&if=3" class="list-group-item list-group-item-action">LINE連携設定</a>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg">
+                    <div class="card">
+                      <div class="card-header bg-light">
+                        公式アカウントリンク
+                      </div>
+                      <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                          <a href="https://manager.line.biz/account/$!{BASIC_ID}/autoresponse/welcome" class="list-group-item list-group-item-action" target="_blank">あいさつメッセージ</a>
+                          <a href="https://manager.line.biz/account/$!{BASIC_ID}/autoresponse" class="list-group-item list-group-item-action" target="_blank">応答メッセージ</a>
+                          <a href="https://manager.line.biz/account/$!{BASIC_ID}/gainfriends" class="list-group-item list-group-item-action" target="_blank">友だちを増やす</a>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </main>
+    </div>
+	#parse( "include/c_footer.inc")
+  </div>
+  <!-- CoreUI and necessary plugins-->
+  #parse( "include/js.inc")
+</body>
+
+</html>

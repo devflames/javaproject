@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+
+	<!-- テーブル生成 -->
+	<insert id="createLineQueLogTable">
+		CREATE TABLE
+			$SCHEMA$.line_que_log
+		LIKE
+			line_admin.tpl_line_que_log
+	</insert>
+
+	<!-- LINE配信ログ一覧 -->
+	<select id="getLineQueLogList" resultClass="dto.Entity.LineQueLog">
+		SELECT
+			id,
+			que_id,
+			line_account_id,
+			account,
+			friend_id,
+			display_name,
+			status,
+			error_message,
+			create_date,
+			update_date,
+			resend_flg
+		FROM
+			$SCHEMA$.line_que_log
+		WHERE
+			<isEqual property="STATUS" compareValue="1" close="AND">
+				status = 200
+			</isEqual>
+			<isEqual property="STATUS" compareValue="2" close="AND">
+				status &gt;= 400
+			</isEqual>
+				line_account_id = #LINE_ACCOUNT_ID# AND
+				que_id = #QUE_ID#
+		ORDER BY
+			create_date
+		<dynamic prepend="LIMIT">
+			<isNotEmpty property="START">
+				$START$,
+			</isNotEmpty>
+			<isNotEmpty property="LIMIT">
+				$LIMIT$
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- LINE配信ログ　カウント数 -->
+	<select id="getLineQueLogCount" resultClass="Integer">
+		SELECT
+			COUNT(id)
+		FROM
+			$SCHEMA$.line_que_log
+		WHERE
+			<isEqual property="STATUS" compareValue="1" close="AND">
+				status = 200
+			</isEqual>
+			<isEqual property="STATUS" compareValue="2" close="AND">
+				status &gt;= 400
+			</isEqual>
+				line_account_id = #LINE_ACCOUNT_ID# AND
+				que_id = #QUE_ID#
+	</select>
+
+	<!-- 再送フラグ更新 -->
+	<update id="updResendFlg">
+		UPDATE
+			$SCHEMA$.line_que_log
+		SET
+			resend_flg = 1
+		WHERE
+			id in ($RESEND_LOG_ID$) AND
+			line_account_id = #LINE_ACCOUNT_ID#
+	</update>
+
+		<!-- 解除したアカウントに紐づくデータを削除-->
+	<delete id="cleanLineQueLog">
+		DELETE FROM
+			$SCHEMA$.line_que_log
+		WHERE
+			line_account_id = #LINE_ACCOUNT_ID#
+	</delete>
+
+</sqlMap>

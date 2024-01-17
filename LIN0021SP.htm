@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<!--
+* CoreUI Pro based Bootstrap Admin Template
+* @version v3.2.0
+* @link https://coreui.io/pro/
+* Copyright (c) 2020 creativeLabs ?ukasz Holeczek
+* License (https://coreui.io/pro/license)
+-->
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="description" content="CoreUI - Open Source Bootstrap Admin Template">
+    <meta name="author" content="?ukasz Holeczek">
+    <meta name="keyword" content="Bootstrap,Admin,Template,Open,Source,jQuery,CSS,HTML,RWD,Dashboard">
+    <title>オートビズ管理画面</title>
+    <!-- Main styles for this application-->
+	#parse( "include/style.inc")
+  </head>
+
+  <body class="c-app">
+	#parse( "include/sidebar.inc")
+    <div class="c-wrapper">
+	#parse( "include/global_header.inc")
+      <div class="c-body">
+        <main class="c-main pb-4">
+          <div class="container-fluid">
+            <div class="fade-in">
+              <h1 class="h4 d-flex align-items-center mb-3">
+                個別トーク
+              </h1>
+              <div class="lineTalkLayout">
+                <div class="lineTalkLayout__list">
+
+
+                  <div class="talkSummary" id="FRIEND_LIST">
+
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+    <!-- CoreUI and necessary plugins-->
+	#parse( "include/js.inc")
+	<script type="text/javascript">
+
+	// フレンド情報の初回読み込み
+	loadFriend("$!{FRIEND_ID}","$!{FRIEND_LIMIT}","$!{DISPLAY_NAME}",0);
+
+	// 友だちリスト取得
+	function loadFriend(friend_id,limit_count,display_name,reload_flg){
+
+		postData = {
+				"FRIEND_ID":friend_id,
+				"LIMIT":limit_count,
+				"DISPLAY_NAME":display_name,
+				"RELOAD_FLG":reload_flg
+				};
+
+		jQuery.ajax({
+			type:"POST",
+			data:postData,
+			cache: false,
+			url: "php2java.php?file=LIN0021EX&if=3",
+			//async: false,   // 同期通信
+		}).done(function(data){
+			$("#FRIEND_LIST").html(data);
+
+			// ページング経由ならスクロールを下に
+			#if( $!{PAGING_FLG} == 1)
+			scrollToButtom("talkSummary__body");
+			#end
+		});
+	}
+
+	// スクロールを一番下にする
+	function scrollToButtom(id) {
+		var list = $("#"+id);
+		list.scrollTop(list[0].scrollHeight - list.height());
+	}
+
+	// プロフィール情報の取得
+	function loadProfile(form_id){
+
+		var form = jQuery("#"+form_id)
+		form.attr("action","./php2java.php?file=LIN0023&if=3");
+		form.submit();
+		form.attr("action","./php2java.php?file=LIN0022&if=3")
+
+	}
+
+    // Enable pusher logging - don't include this in production
+    //Pusher.logToConsole = true;
+
+    var pusher = new Pusher('4cada46c2e3f86b1828c', {
+      cluster: 'ap3'
+    });
+
+    var channel = pusher.subscribe('my-channel');
+    channel.bind('my-event', function(data) {
+
+      // pusherから送られてきたデータとアカウントIDが同じならフレンド一覧をリロード
+      if( data.LID == $!{LINE_ACCOUNT_ID} ){
+
+    	  var friend_id = $!{FRIEND_ID};
+    	  var display_name = $("#DISPLAY_NAME").val();
+    	  var limit = $!{FRIEND_LIMIT};
+
+    	  loadFriend(friend_id,limit,display_name,1)
+      }
+
+    });
+	</script>
+  </body>
+</html>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+
+	<!-- テーブル生成 -->
+	<insert id="createLineChatHistoryTable">
+		CREATE TABLE
+			$SCHEMA$.line_chat_history
+		LIKE
+			line_admin.tpl_line_chat_history
+	</insert>
+
+	<!-- チャット履歴情報取得 -->
+	<select id="getChatHistoryList" resultClass="dto.Entity.LineChatHistory">
+		SELECT
+			chat_id,
+			line_account_id,
+			friend_id,
+			line_id,
+			chat,
+			direction,
+			is_read,
+			create_date,
+			update_date
+		FROM
+			$SCHEMA$.line_chat_history
+		WHERE
+			line_account_id = #LINE_ACCOUNT_ID# AND
+			friend_id = #FRIEND_ID#
+		ORDER BY
+			create_date DESC,chat_id DESC
+		LIMIT #LIMIT#
+	</select>
+
+	<!-- チャット履歴情報最大数取得 -->
+	<select id="getChatHistoryMax" resultClass="Integer">
+		SELECT
+			COUNT(chat_id)
+		FROM
+			$SCHEMA$.line_chat_history
+		WHERE
+			line_account_id = #LINE_ACCOUNT_ID# AND
+			friend_id = #FRIEND_ID#
+		ORDER BY
+			create_date DESC
+	</select>
+
+	<!-- チャット履歴情報を既読に変更 -->
+	<update id="updChatHistoryRead">
+		UPDATE
+			$SCHEMA$.line_chat_history
+		SET
+			is_read = 1,
+			update_date = NOW()
+		WHERE
+			line_account_id = #LINE_ACCOUNT_ID# AND
+			friend_id = #FRIEND_ID# AND
+			is_read = 0 AND
+			direction = 2
+	</update>
+
+	<!-- チャット履歴削除-->
+	<delete id="cleanChatHistory">
+		DELETE FROM
+			$SCHEMA$.line_chat_history
+		WHERE
+			line_account_id = #LINE_ACCOUNT_ID#
+	</delete>
+
+</sqlMap>

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<!--
+* CoreUI Pro based Bootstrap Admin Template
+* @version v3.2.0
+* @link https://coreui.io/pro/
+* Copyright (c) 2020 creativeLabs ?ukasz Holeczek
+* License (https://coreui.io/pro/license)
+-->
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="description" content="CoreUI - Open Source Bootstrap Admin Template">
+    <meta name="author" content="?ukasz Holeczek">
+    <meta name="keyword" content="Bootstrap,Admin,Template,Open,Source,jQuery,CSS,HTML,RWD,Dashboard">
+    <title>オートビズ管理画面</title>
+    <!-- Main styles for this application-->
+	#parse( "include/style.inc")
+  </head>
+
+  <body class="c-app">
+	#parse( "include/sidebar.inc")
+    <div class="c-wrapper">
+	#parse( "include/global_header.inc")
+      <div class="c-body">
+        <main class="c-main">
+          <div class="container-fluid">
+            <div class="fade-in">
+              <h1 class="h4 d-flex align-items-center mb-3">
+                一斉配信メッセージ一覧
+              </h1>
+
+              <div class="d-flex align-items-center">
+				  <div class="mr-2">
+	              <a href="php2java.php?file=LIN0031&if=3"><button class="btn btn-primary" type="button">新規作成</button></a>
+				  </div>
+				  <div class="mr-2">
+				　<a href="php2java.php?file=LIN0040&if=3"><button class="btn btn-sm btn-secondary btn-pill" type="button">下書一覧</button></a>
+				  </div>
+			  </div>
+
+              #if($!{ERR_MSG})
+              	<span id="ERR_MSG" style="color:red;font:bold 11pt 'MSP ゴシック';">$!{ERR_MSG}</span>
+             	#end
+              <hr>
+
+              <div class="nav-tabs-boxed">
+                <ul class="nav nav-tabs" role="tablist">
+                  <li class="nav-item">
+                    <a class="nav-link active" data-toggle="tab" href="#reserved" role="tab" aria-controls="reserved" id="RESERVE">
+                      予約中
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#result" role="tab" aria-controls="result" id="RESULT">
+                      配信結果
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                  	<small style="margin-left:20px;margin-top:15px;display:none;" id="RESULT_NOTE">最新の50件まで表示されます</small>
+                  </li>
+                </ul>
+                <div class="tab-content">
+                  <div class="tab-pane active" id="reserved" role="tabpanel">
+                    <div class="table-scroll-sm">
+
+                      <table class="table table-hover table-bordered mb-0">
+                        <thead class="thead-light">
+                          <tr>
+                            <th>予約ID</th>
+                            <th>内容</th>
+                            <th>宛先</th>
+                            <th>予約日時</th>
+                            <th>操作</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                        #foreach( $!{reserve} in $!{RESERVE_QUE_LIST} )
+
+                      		<tr>
+								<td><a href="php2java.php?file=LIN0032&if=3&QUE_ID=$!{reserve.que_id}">$!{reserve.que_id}</a></td>
+								<td>$!{reserve.messageHtml()}</td>
+								<td>$!{reserve.send_count}件</td>
+								<td>$format.date($!{reserve.send_datetime}, "yyyy/MM/dd HH:mm:ss")</td>
+								<td><a href="javascript:void(0);" data-toggle="modal" data-target="#delModal" onclick="del($!{reserve.que_id})">
+									<button type="button" class="btn btn-pill btn-sm btn-danger"><span class=\"cil-ban btn-icon mr-2"></span>削除</button>
+									</a>
+								</td>
+							</tr>
+						#end
+
+                        </tbody>
+                      </table>
+                    #if( $!{RESERVE_QUE_LIST.size()} == 0 )
+                    	予約されているメッセージはありません。
+                    #end
+                    </div>
+                  </div>
+                  <div class="tab-pane" id="result" role="tabpanel">
+                    <div class="table-scroll-sm">
+
+                      <table class="table table-hover table-bordered mb-0">
+                        <thead class="thead-light">
+                          <tr>
+                            <th>予約ID</th>
+                            <th>内容</th>
+                            <th>配信数</th>
+                            <th>状態</th>
+                            <th>予約日時</th>
+                            <th>完了日時</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+
+						#foreach( $!{result} in $!{RESULT_QUE_LIST} )
+
+		                	<tr>
+							<td><a href="php2java.php?file=LIN0033&if=3&QUE_ID=$!{result.que_id}">$!{result.que_id}</a></td>
+							<td>$!{result.messageHtml()}</td>
+							<td>$!{result.send_count}件
+
+							#if ( $!{result.error_count} >= 1)
+								<a href="php2java.php?file=LIN0033&if=3&QUE_ID=$!{result.que_id}&STATUS_2=checked">
+								<button class="btn btn-sm btn-pill btn-warning">エラーあり</button>
+								</a>
+							#end
+
+							</td>
+							<td>
+								#if( $!{result.status} == 9)
+									配信済み
+								#elseif( $!{result.status} == 11)
+									エラー
+								#end
+							</td>
+							<td>$format.date($!{result.send_datetime}, "yyyy/MM/dd HH:mm:ss")</td>
+							<td>$format.date($!{result.end_datetime}, "yyyy/MM/dd HH:mm:ss")</td>
+
+						#end
+
+                        </tbody>
+                      </table>
+                    #if( $!{RESULT_QUE_LIST.size()} == 0 )
+                    	配信されたメッセージはありません。
+                    #end
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </main>
+      </div>
+      <footer class="c-footer">
+        <div class="mfs-auto">c BizCreate,Inc.</div>
+      </footer>
+    </div>
+
+    <!-- 削除 確認 モーダル -->
+    <div class="modal fade" id="delModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="listSettingModal">メッセージ削除</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group row" id="DEL_LABEL"></div>
+          </div>
+          <div class="modal-footer">
+          <form action="php2java.php?file=LIN0030&if=3" method="POST">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">キャンセル</button>
+            <button type="submit" class="btn btn-primary">OK</button>
+            <input type="hidden" id="DEL_QUE_ID" name="QUE_ID" value="$!{QUE_ID}">
+            <input type="hidden" name="EXEC_TYPE" value="DEL">
+            <input type="hidden" id="MODE" name="MODE" value="">
+          </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CoreUI and necessary plugins-->
+	#parse( "include/js.inc")
+
+	<script type="text/javascript">
+	$(document).ready(function(){
+
+		$(function(){
+			setTimeout(function(){
+				$('#ERR_MSG').fadeOut( 2000 )
+			},6000);
+		});
+
+		$("#RESULT").on('click',function(){
+			$("#RESULT_NOTE").show();
+			$("#footer").hide();
+
+		});
+
+		$("#RESERVE").on('click',function(){
+			$("#RESULT_NOTE").hide();
+			$("#footer").hide();
+		});
+
+		// 配信結果詳細からの戻りの場合
+		#if( $!{TYPE} == 2 )
+			$("#RESULT").tab('show');
+		#end
+
+	});
+
+	// 削除モーダル
+	function del(id){
+
+		//var name_str = name.replace(/"/, "&quot;")+ "を削除します。よろしいですか？";
+		var id_str = "予約ID:" + id + "を削除します。よろしいですか？";
+		$("#DEL_LABEL").text(id_str);
+		$("#DEL_QUE_ID").val(id);
+
+	}
+
+	function pageChange(page) {
+		var frm = document.getElementById("EXEC_FORM");
+		frm.NOW_PAGE.value = page;
+		frm.submit();
+	}
+
+	</script>
+
+  </body>
+</html>

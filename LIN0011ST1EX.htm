@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<!--
+* CoreUI Pro based Bootstrap Admin Template
+* @version v3.2.0
+* @link https://coreui.io/pro/
+* Copyright (c) 2020 creativeLabs ?ukasz Holeczek
+* License (https://coreui.io/pro/license)
+-->
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="description" content="CoreUI - Open Source Bootstrap Admin Template">
+    <meta name="author" content="?ukasz Holeczek">
+    <meta name="keyword" content="Bootstrap,Admin,Template,Open,Source,jQuery,CSS,HTML,RWD,Dashboard">
+    <title>オートビズ管理画面</title>
+    <!-- Main styles for this application-->
+	#parse( "include/style.inc")
+  </head>
+
+  <body class="c-app">
+	#parse( "include/sidebar.inc")
+    <div class="c-wrapper">
+      #parse( "include/global_header.inc")
+      <div class="c-body">
+        <main class="c-main">
+          <div class="container-fluid">
+          <form action="php2java.php?file=LIN0011ST2&if=3" method="POST">
+            <div class="fade-in">
+              <h1 class="h4 d-flex align-items-center mb-3">
+                LINE連携設定
+              </h1>
+              <ol class="stepper my-4">
+                <li class="stepper__item is-completed is-active">
+                  <div class="step-counter">1</div>
+                  <div class="step-name">LINE公式アカウントの設定</div>
+                </li>
+                <li class="stepper__item">
+                  <div class="step-counter">2</div>
+                  <div class="step-name">受信設定</div>
+                </li>
+                <li class="stepper__item">
+                  <div class="step-counter">3</div>
+                  <div class="step-name">LINEログインチャネル設定</div>
+                </li>
+                <li class="stepper__item">
+                  <div class="step-counter">4</div>
+                  <div class="step-name">その他</div>
+                </li>
+              </ol>
+              <div class="card mb-0">
+                <div class="card-body">
+                  <div>
+                    設定するMessaging APIのLINE公式アカウントは以下になります。
+                  </div>
+                  <hr>
+                  <div class="d-flex align-items-center">
+                    <img src="$!{PICTURE_URL}" alt="" class="rounded-circle" width="80">
+                    <div class="ml-4">
+                      <div class="font-weight-bold">
+                        $!{DISPLAY_NAME}
+                      </div>
+                      <small>
+                        ベーシックID：$!{BASIC_ID}
+                      </small>
+                    </div>
+                  </div>
+
+                </div>
+                <div class="card-footer">
+                  <div class="d-flex my-3 justify-content-center">
+                    <button type="button" class="btn btn-secondary btn-lg mx-2 px-lg-5" id="BACK_BTN">戻る</button>
+                    #if( $!{BASIC_ID} != "" )
+                    <button type="submit" class="btn btn-primary btn-lg mx-2 px-lg-5">確定して次へ進む</button>
+                    #end
+                  </div>
+                </div>
+              </div>
+            </div>
+                <input type="hidden" name="CHANEL_ID" value="$!{CHANEL_ID}">
+            	<input type="hidden" name="CHANEL_SECRET" value="$!{CHANEL_SECRET}">
+            	<input type="hidden" name="CHANEL_ACCESS_TOKEN" value="$!{CHANEL_ACCESS_TOKEN}">
+            	<input type="hidden" name="BASIC_ID" value="$!{BASIC_ID}">
+            	<input type="hidden" name="DISPLAY_NAME" value="$!{DISPLAY_NAME}">
+            	<input type="hidden" name="EXEC_TYPE" value="ADD">
+            </form>
+            <form method="post" action="php2java.php?file=LIN0011ST1&if=3" id="BACK">
+            	<input type="hidden" name="CHANEL_ID" value="$!{CHANEL_ID}">
+            	<input type="hidden" name="CHANEL_SECRET" value="$!{CHANEL_SECRET}">
+            	<input type="hidden" name="CHANEL_ACCESS_TOKEN" value="$!{CHANEL_ACCESS_TOKEN}">
+            </form>
+          </div>
+        </main>
+      </div>
+	#parse( "include/c_footer.inc")
+    </div>
+    <!-- CoreUI and necessary plugins-->
+	#parse( "include/js.inc")
+    <script type="text/javascript">
+	$(document).ready(function(){
+
+		$("#BACK_BTN").click(function(){
+			$("#BACK").submit();
+		})
+	})
+    </script>
+
+  </body>
+</html>

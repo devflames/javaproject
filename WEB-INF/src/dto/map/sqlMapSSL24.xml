@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+
+	<!-- プラン情報取得 -->
+	<select id="getPlanId" resultClass="Integer">
+		SELECT
+			plan_id
+		FROM
+			bizcreate_view.v_contract_active T1
+		WHERE
+			T1.account_code = #ACCOUNT# AND
+			T1.service_group = 1 AND
+			T1.contract_status = 2
+	</select>
+
+</sqlMap>

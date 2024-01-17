@@ -1,0 +1,99 @@
+
+            <div class="talkSummary__header">
+            <form action="php2java.php?file=LIN0021&if=3" method="POST">
+              <div class="input-group input-group-sm">
+                <input class="form-control bg-light" id="DISPLAY_NAME" name="display_name" type="text" placeholder="名前で検索" value="$!{DISPLAY_NAME}">
+                <span class="input-group-append">
+                  <button class="btn btn-secondary" type="submit">
+                    <svg class="c-icon" style="height: 0.9rem">
+                      <use xlink:href="/-ui/vendors/@coreui/icons/svg/free.svg#cil-magnifying-glass"></use>
+                    </svg>
+                  </button>
+                </span>
+              </div>
+            </form>
+            </div>
+
+			<div class="talkSummary__body" id="talkSummary__body">
+				<ul class="talkList">
+                      #foreach( $!{friend} in $!{LINE_FRIEND_LIST})
+                        <li class="talkList__item">
+                          #if( $!{FRIEND_ID} == $!{friend.friend_id})
+							#set( $active = "is-active" )
+						  #else
+						  	#if( $!{FRIEND_ID} == 0 && $velocityCount == 1 )
+						  		#set( $active = "is-active" )
+						  	#else
+						  		#set( $active = "" )
+                          	#end
+                          #end
+                          <div class="talkSummaryCard $active SELECT" data-friend="$!{friend.friend_id}" data-line="$!{friend.line_id}" role="button">
+                           #if( $!{friend.not_read_count} > 0 )
+	                            <span data-badgeicon="$!{friend.not_read_count}" class="badgeicon">
+	                            <div class="talkSummaryCard__image trim-image">
+	                            #if( $!{friend.profile_image} != "" )
+	                              <img src="$!{friend.profile_image}" alt="">
+	                            #else
+	                              <img src="/-ui/assets/img/icon.png" alt="">
+	                            #end
+	                            </div>
+                            	</span>
+	                        #else
+	                            <div class="talkSummaryCard__image trim-image">
+	                            #if( $!{friend.profile_image} != "" )
+	                              <img src="$!{friend.profile_image}" alt="">
+	                            #else
+	                              <img src="/-ui/assets/img/icon.png" alt="">
+	                            #end
+	                            </div>
+                            #end
+
+                            <div class="talkSummaryCard__content">
+                              <div class="talkSummaryCard__header">
+                                <div class="talkSummaryCard__name">
+                                	 $!{friend.display_name}
+                                </div>
+                                <div class="talkSummaryCard__badge">
+                                #if( $!{friend.support} == 1)
+                                  <span class="badge bg-success text-white">対応済</span>
+                                #else
+                                  <span class="badge bg-warning text-white">未対応</span>
+                                #end
+                                </div>
+                              </div>
+                              <div class="talkSummaryCard__body">
+                                <!--  こんにちは！今年もよろしくお願いいたします -->
+                              </div>
+                            </div>
+                          </div>
+                        </li>
+                      #end
+				</ul>
+			</div>
+
+        	<div class="talkSummary__footer">
+                 #if( $!{LINE_FRIEND_LIST.size()} > 10 && $!{LINE_FRIEND_LIST.size()} < $!{FRIEND_COUNT} )
+                 <form action="php2java.php?file=LIN0021&if=3" method="POST">
+                 <input type="hidden" name="friend_limit" id="FRIEND_LIMIT" value="$!{CONTINUE}">
+                 <input type="hidden" name="paging_flg" value="1">
+                   <button class="btn btn-sm btn-pill btn-light btn-block" type="submit" id="LOAD_FRIEND" >
+					次の10件をロード
+                   </button>
+                  </form>
+                 #end
+            </div>
+
+
+<script type="text/javascript">
+
+     $(document).ready(function(){
+		$(".SELECT").on("click",{exec_type:""},loadHistory);
+		$(".SELECT").on("click",{exec_type:""},loadProfile);
+
+		#if( $!{RELOAD_FLG} == 0 )
+
+			// 友だち選択初期表示
+		    $(".is-active").trigger("click");
+		#end
+     });
+</script>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<!--
+* CoreUI Pro based Bootstrap Admin Template
+* @version v3.2.0
+* @link https://coreui.io/pro/
+* Copyright (c) 2020 creativeLabs ?ukasz Holeczek
+* License (https://coreui.io/pro/license)
+-->
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="description" content="CoreUI - Open Source Bootstrap Admin Template">
+    <meta name="author" content="?ukasz Holeczek">
+    <meta name="keyword" content="Bootstrap,Admin,Template,Open,Source,jQuery,CSS,HTML,RWD,Dashboard">
+    <title>オートビズ管理画面</title>
+    <!-- Main styles for this application-->
+ 	#parse( "include/style.inc")
+  </head>
+
+  <body class="c-app">
+	#parse( "include/sidebar.inc")
+    <div class="c-wrapper">
+	#parse( "include/global_header.inc")
+      <div class="c-body">
+        <main class="c-main">
+          <div class="container-fluid">
+            <div class="fade-in">
+              <h1 class="h4 d-flex align-items-center mb-3">
+                LINE連携設定
+              </h1>
+              <ol class="stepper my-4">
+                <li class="stepper__item is-completed is-active">
+                  <div class="step-counter">1</div>
+                  <div class="step-name">LINE公式アカウントの設定</div>
+                </li>
+                <li class="stepper__item">
+                  <div class="step-counter">2</div>
+                  <div class="step-name">受信設定</div>
+                </li>
+                <li class="stepper__item">
+                  <div class="step-counter">3</div>
+                  <div class="step-name">LINEログインチャネル設定</div>
+                </li>
+                <li class="stepper__item">
+                  <div class="step-counter">4</div>
+                  <div class="step-name">その他</div>
+                </li>
+              </ol>
+              #if ( $!{ERR_MSG} )
+                <div style="color:red;font:bold 11pt 'MSP ゴシック';">$!{ERR_MSG}</div>
+              #end
+              <div class="card mb-0">
+              <form action="php2java.php?file=LIN0011ST1EX&if=3" method="POST">
+                <div class="card-body">
+                  <div class="d-md-flex align-items-center justify-content-between">
+                    <div>設定するLINE公式アカウントのMessaging API チャネル情報を入力してください</div>
+                    #if( $!{ASP_PLAN} == 2 )
+                    	#set( $url = "https://autobiz.help/basic/kanri/line/archives/31234/#STEP1" )
+                    #elseif( $!{ASP_PLAN} == 4 )
+                    	#set( $url = "https://autobiz.help/pro/kanri/line/archives/33446/#STEP1")
+                    #else
+                    	#set( $url ="https://autobiz.help/basic/kanri/line/archives/31234/#STEP1")
+                    #end
+                    <a href="$!{url}" target="_blank"><button class="btn btn-pill btn-sm btn-secondary mt-2 mt-md-0" type="button">チャネル情報の確認方法はこちら</button></a>
+                  </div>
+                  <hr>
+                  <div class="row form-group">
+                    <label class="form-label col-lg-3" for="text-input">
+                      Channel ID<span class="badge bg-primary text-white ml-2">必須</span>
+                    </label>
+                    <div class="col-lg-9">
+                      <input class="form-control" id="CHANEL_ID" type="text" name="CHANEL_ID" value="$!{CHANEL_ID}" placeholder="">
+                    </div>
+                  </div>
+                  <div class="row form-group">
+                    <label class="form-label col-lg-3" for="text-input">
+                      Channel Secret<span class="badge bg-primary text-white ml-2">必須</span>
+                    </label>
+                    <div class="col-lg-9">
+                      <input class="form-control" id="CHANEL_SECRET" type="text" name="CHANEL_SECRET" value="$!{CHANEL_SECRET}" placeholder="">
+                    </div>
+                  </div>
+                  <div class="row form-group mb-0">
+                    <label class="form-label col-lg-3" for="text-input">
+                      Channel access token
+                      <small>(long-lived)</small><span class="badge bg-primary text-white ml-2">必須</span>
+                    </label>
+                    <div class="col-lg-9">
+                      <input class="form-control" id="CHANEL_ACCESS_TOKEN" type="text" name="CHANEL_ACCESS_TOKEN" value="$!{CHANEL_ACCESS_TOKEN}" placeholder="">
+                    </div>
+                  </div>
+                </div>
+                <div class="card-footer">
+                  <div class="d-flex my-3 justify-content-center">
+                    <!--  <a href="php2java.php?file=LIN0000&if=3">
+                    <button type="button" class="btn btn-secondary btn-lg mx-2 px-lg-5">戻る</button>
+                    </a>
+                    -->
+                      <button type="submit" class="btn btn-primary btn-lg mx-2 px-lg-5">チャネル情報を登録する</button>
+                  </div>
+                </div>
+                <input type="hidden" name="EXEC_TYPE" value="CHECK">
+              </form>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+	#parse( "include/c_footer.inc")
+    </div>
+    <!-- CoreUI and necessary plugins-->
+	#parse( "include/js.inc")
+
+
+  </body>
+</html>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN"
+ "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>
+
+    <settings useStatementNamespaces="true" classInfoCacheEnabled="true"/>
+
+    <transactionManager type="JDBC">
+        <dataSource type="SIMPLE">
+            <!--<property name="JDBC.Driver" value="org.gjt.mm.mysql.Driver" />-->
+            <property name="JDBC.Driver" value="com.mysql.jdbc.Driver" />
+            <property name="JDBC.ConnectionURL" value="jdbc:mysql://${_host}:${_port}/?zeroDateTimeBehavior=convertToNull" />
+            <property name="JDBC.Username" value="" />
+            <property name="JDBC.Password" value="" />
+			<property name="JDBC.DefaultAutoCommit" value="false"/>
+
+			<!-- コネクションプーリング -->
+			<property name="Pool.MaximumActiveConnections" value="32"/>
+			<property name="Pool.MaximumIdleConnections" value="5"/>
+			<property name="Pool.MaximumCheckoutTime" value="20000"/>
+			<property name="Pool.TimeToWait" value="2000"/>
+			<property name="Pool.ValidationQuery" value="select 1"/>
+
+			<!-- プールされたコネクションの生存確認
+		    生成されてから ${olderThan}ms 経過
+		    or 使われなくなってから ${notUsedFor}ms 経過 したコネクションは
+		    使う前に ${pingQuery} を発行して生きているかを確認する
+		    -->
+		   <property name="Pool.PingQuery" value="select 1"/>
+		   <property name="Pool.PingEnabled" value="true"/>
+		   <property name="Pool.PingConnectionsOlderThan" value="300"/> <!-- 5分 -->
+		   <property name="Pool.PingConnectionsNotUsedFor" value="240"/> <!-- 4分 -->
+
+		   <!--<property name="Pool.PingConnectionsOlderThan" value="1200000"/>--> <!-- 20分 -->
+		   <!--<property name="Pool.PingConnectionsNotUsedFor" value="900000"/>--> <!-- 15分 -->
+        </dataSource>
+    </transactionManager>
+
+    <sqlMap resource="dto/map/LineAccount.xml" />
+    <sqlMap resource="dto/map/LineQue.xml" />
+    <sqlMap resource="dto/map/LineTag.xml" />
+    <sqlMap resource="dto/map/LineFriend.xml" />
+    <sqlMap resource="dto/map/LineEntrySet.xml" />
+    <sqlMap resource="dto/map/LineAttribute.xml" />
+    <sqlMap resource="dto/map/LineChatHistory.xml" />
+    <sqlMap resource="dto/map/LineFolder.xml" />
+    <sqlMap resource="dto/map/LineQueLog.xml" />
+    <sqlMap resource="dto/map/LineTemp.xml" />
+    <sqlMap resource="dto/map/sqlMap03.xml" />
+    <sqlMap resource="dto/map/sqlMapSM.xml" />
+
+</sqlMapConfig>

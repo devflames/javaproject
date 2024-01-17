@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+
+	<!-- テーブル生成 -->
+	<insert id="createLineEntrySetTable">
+		CREATE TABLE
+			$SCHEMA$.line_entry_set
+		LIKE
+			line_admin.tpl_line_entry_set
+	</insert>
+
+	<select id="getLineEntrySet"  resultClass="dto.Entity.LineEntrySet">
+		SELECT
+			tag_id
+		FROM
+			$SCHEMA$.line_entry_set
+		WHERE
+			line_account_id = #LINE_ACCOUNT_ID# AND
+			entry_type = #ENTRY_TYPE#
+	</select>
+
+	<!-- LINE登録初期設定 登録 -->
+	<insert id="addLineEntrySet">
+		INSERT INTO
+		$SCHEMA$.line_entry_set
+		(
+			sid,
+			line_account_id,
+			tag_id,
+			entry_type,
+			create_date,
+			update_date
+		) VALUES (
+			#SID#,
+			#LINE_ACCOUNT_ID#,
+			#TAG_ID#,
+			#ENTRY_TYPE#,
+			NOW(),
+			NOW()
+		)
+	</insert>
+
+	<!-- LINE登録初期設定 更新 -->
+	<update id="updLineEntrySet">
+		UPDATE
+			$SCHEMA$.line_entry_set
+		SET
+			sid = #SID#,
+			tag_id = #TAG_ID#,
+			update_date = NOW()
+		WHERE
+			line_account_id = #LINE_ACCOUNT_ID# AND
+			entry_type = #ENTRY_TYPE#
+	</update>
+
+	<!-- LINE登録初期設定 削除 -->
+	<delete id="delLineEntrySet">
+		DELETE FROM
+			$SCHEMA$.line_entry_set
+		WHERE
+			line_account_id = #LINE_ACCOUNT_ID# AND
+			entry_type = #ENTRY_TYPE#
+	</delete>
+
+	<!-- 解除したアカウントに紐づくデータを削除-->
+	<delete id="cleanLineEntry_set">
+		DELETE FROM
+			$SCHEMA$.line_entry_set
+		WHERE
+			line_account_id = #LINE_ACCOUNT_ID#
+	</delete>
+
+</sqlMap>

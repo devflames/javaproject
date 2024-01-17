@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<!--
+* CoreUI Pro based Bootstrap Admin Template
+* @version v3.2.0
+* @link https://coreui.io/pro/
+* Copyright (c) 2020 creativeLabs ?ukasz Holeczek
+* License (https://coreui.io/pro/license)
+-->
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="description" content="CoreUI - Open Source Bootstrap Admin Template">
+    <meta name="author" content="?ukasz Holeczek">
+    <meta name="keyword" content="Bootstrap,Admin,Template,Open,Source,jQuery,CSS,HTML,RWD,Dashboard">
+    <title>オートビズ管理画面</title>
+    <!-- Main styles for this application-->
+	#parse( "include/style.inc")
+  </head>
+
+  <body class="c-app">
+	#parse( "include/sidebar.inc")
+    <div class="c-wrapper">
+	#parse( "include/global_header.inc")
+      <div class="c-body">
+        <main class="c-main">
+        <form name="EXEC_FORM" id="EXEC_FORM" method="POST" action="php2java.php?file=LIN0032&if=3">
+          <div class="container-fluid">
+            <div class="fade-in">
+              <h1 class="h4 d-flex align-items-center mb-3">
+              #if( $!{EXEC_TYPE} == "DRAFT" )
+              	#set( $back_url = "php2java.php?file=LIN0040&if=3" )
+              #else
+              	#set( $back_url = "php2java.php?file=LIN0030&if=3" )
+              #end
+                <a href="$back_url"><button type="button" class="btn-back"></button></a>
+                一斉配信メッセージ更新
+              </h1>
+              <div id="ERR_MSG3" style="color:red;font:bold 11pt 'MSP ゴシック';">$!{ERR_MSG}</div>
+              <div class="card">
+                <div class="card-header bg-light">
+                  1. 送信先を設定
+                </div>
+                <div id="ERR_MSG" style="color:red;font:bold 11pt 'MSP ゴシック';"></div>
+                <div class="card-body">
+                  <div class="form-check">
+                  #if( $!{ADDRESS} == 3)
+                  	<input class="form-check-input" type="radio" value="3" name="ADDRESS" id="SEND_TYPE3" checked >
+                  	<input class="form-control" type="hidden" name="FRIEND_ID_LIST" id="FRIEND_ID_LIST" value="$!{FRIEND_ID_LIST}">
+                    <label class="form-check-label" for="SEND_TYPE3">
+                    	配信エラーから選択した友だちに配信する
+                    </label>
+                    <span id="ALL"></span>
+                    <button type="button" class="btn btn-sm btn-pill btn-light ml-2" data-toggle="modal" data-target="#listModal" id="" onClick="javascript:displayAP(1);">
+                       該当者表示
+                    </button>
+                  #else
+	                  #if( $!{ADDRESS} == 1 )
+	                  	#set( $address_checked1 = "checked" )
+	                  #end
+	                    <input class="form-check-input" type="radio" value="1" name="ADDRESS" id="SEND_TYPE1" $address_checked1 >
+	                    <label class="form-check-label" for="SEND_TYPE1">
+	                      友だち全員に配信する
+	                    </label>
+	                    <span id="ALL"></span>
+	                  </div>
+	                  <div class="form-check">
+	                  #if( $!{ADDRESS} == 2 )
+	                  	#set( $address_checked2 = "checked" )
+	                  #end
+	                    <input class="form-check-input" type="radio" value="2" name="ADDRESS" id="SEND_TYPE2" $address_checked2>
+	                    <label class="form-check-label" for="SEND_TYPE2">
+	                      友だちを絞り込んで配信する
+	                    </label>
+	                  </div>
+                  <div class="card mt-2 ml-3">
+                    <div class="card-body">
+                      <div>
+                        <button class="btn btn-primary col-sm-12 col-md-auto" type="button" data-toggle="collapse" data-target="#filterSetting" aria-expanded="false" aria-controls="filterSetting" id="CONDITION_SET">
+                          絞り込み条件の設定
+                        </button>
+                        <button class="btn btn-secondary col-sm-12 col-md-auto mt-2 mt-md-0" type="button" id="CONDITION_RESET">
+                          条件のリセット
+                        </button>
+                      </div>
+                      <div class="collapse" id="filterSetting">
+                        <div class="card mt-2">
+                          <div class="card-body">
+                            <div class="row form-group">
+                              <label class="form-label col-lg-2" for="text-input">
+                                友だちの表示名
+                              </label>
+                              <div class="col-lg-10">
+                                <input class="form-control" type="text" name="DISPLAY_NAME" id="DISPLAY_NAME" value="$!{DISPLAY_NAME}" placeholder="">
+                              </div>
+                            </div>
+                            <div class="row form-group">
+                              <label class="form-label col-lg-2" for="text-input">
+                                友だち登録日
+                              </label>
+                              <div class="col-lg-10 d-md-flex">
+                                <div class="input-group">
+                                  <input class="form-control datetimepicker is-noTime" id="CREATE_DATE_START" name="CREATE_DATE_START" type="text" value="$!{CREATE_DATE_START}" placeholder="開始日">
+                                  <div class="input-group-append">
+                                    <span class="input-group-text">～</span>
+                                  </div>
+                                  <input class="form-control datetimepicker is-noTime"  id="CREATE_DATE_END" name="CREATE_DATE_END" type="text" value="$!{CREATE_DATE_END}" placeholder="終了日">
+                                </div>
+                                <div class="btn-group mt-2 mt-md-0 ml-md-4 col-md-3 px-0" role="group" aria-label="Basic example">
+                                  <button type="button" class="btn btn-light" id="LAST_MONTH">先月</button>
+                                  <button type="button" class="btn btn-light" id="THIS_MONTH">今月</button>
+                                  <button type="button" class="btn btn-light" id="TODAY">本日</button>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="row form-group">
+                              <label class="form-label col-lg-2" for="text-input">
+                                メール連携状態
+                              </label>
+                                #if( $!{MAIL_STATUS} == 1 )
+	                                #set( $MAIL_STATUS_1 = "checked" )
+                                #elseif( $!{MAIL_STATUS} == 2 )
+	                                #set( $MAIL_STATUS_2 = "checked" )
+                                #elseif( $!{MAIL_STATUS} == 3 )
+	                                #set( $MAIL_STATUS_3 = "checked" )
+                                #end
+                              <div class="col-lg-10">
+                                <div class="form-check form-check-inline">
+                                  <input class="form-check-input" type="radio" name="MAIL_STATUS" id="CONNECT1" value="1" $MAIL_STATUS_1>
+                                  <label class="form-check-label" for="CONNECT1">全て</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                  <input class="form-check-input" type="radio" name="MAIL_STATUS" id="CONNECT2" value="2" $MAIL_STATUS_2>
+                                  <label class="form-check-label" for="CONNECT2">未連携</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                  <input class="form-check-input" type="radio" name="MAIL_STATUS" id="CONNECT3" value="3" $MAIL_STATUS_3>
+                                  <label class="form-check-label" for="CONNECT3">連携済</label>
+                                </div>
+                              </div>
+                            </div>
+                            <hr>
+                            <div class="row form-group">
+                              <label class="form-label col-lg-2" for="text-input">
+                                タグ
+                              </label>
+                              <div class="col-lg-10">
+                                <input type="text" class="form-control tag-suggest" name="TAG" id="TAG" value='$!{TAG_VALUE}'>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="card-footer text-right">
+                            <button type="button" class="btn btn-primary" id="CONDITION_COMMIT">この条件で設定</button>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="mt-3" id="DISP_CONDITION" style="display:none;">
+                        <strong>表示名：</strong>名前に<span id="CONDITION1">〇〇</span>を含む
+                        <strong>友だち登録日：</strong><span id="CONDITION2"></span>～<span id="CONDITION3"></span>
+                        <strong>メール連携状態：</strong><span id="CONDITION4"></span>
+                        <strong>タグ：</strong><span id="CONDITION5">〇〇</span>
+                        <!-- <button type="button" class="btn btn-sm btn-pill btn-light ml-2" id="FRIEND_LIST">
+                          該当者表示
+                        </button> -->
+                        <button class="btn btn-sm btn-pill btn-light ml-2" type="button" data-toggle="modal" id="LIST_MODAL" name="LIST_MODAL" data-boxid="2" data-target="#listModal" onclick="displayFriend();">該当者表示</button>
+                        <div><strong>送信数：</strong><span id="SEND_COUNT"></span></div>
+                      </div>
+                    </div>
+                  #end
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header bg-light">
+                  2. 配信日時設定
+                </div>
+                <div class="card-body">
+                  <div class="form-check">
+                  #if( $!{SEND_TYPE} == 1 )
+                  	#set( $send_type_checked1 = "checked" )
+                  #end
+                    <input class="form-check-input" type="radio" value="1" name="SEND_TYPE" id="exampleRadios3" $send_type_checked1 >
+                    <label class="form-check-label" for="exampleRadios3">
+                      登録後すぐに配信する
+                    </label>
+                  </div>
+                  <div class="form-check">
+                  #if( $!{SEND_TYPE} == 2 )
+                  	#set( $send_type_checked2 = "checked" )
+                  #end
+                    <input class="form-check-input" type="radio" value="2" name="SEND_TYPE" id="exampleRadios4" $send_type_checked2>
+                    <label class="form-check-label" for="exampleRadios4">
+                      予約日時を指定
+                    </label>
+                  </div>
+                  <div class="ml-3 mt-2">
+                    <input class="form-control datetimepicker" id="SEND_DATE" name="SEND_DATE" value="$!{SEND_DATE}" type="text" placeholder="予約日時を指定">
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header bg-light">
+                  3. 配信メッセージの作成
+                </div>
+                <div id="ERR_MSG2" style="color:red;font:bold 11pt 'MSP ゴシック';"></div>
+                <div class="card-body" id="MESSAGE_BOX">
+                  <div class="card CARD_BOX">
+                    <div class="card-body line-form">
+                      <div class="commentForm">
+
+                        <ul class="nav nav-tabs" role="tablist">
+                          <li class="nav-item">
+                            <a class="nav-link textarea-tab active" data-toggle="tab" href="#textArea1" role="tab" aria-controls="textArea1" id="textAreaTab1">
+                              テキスト
+                            </a>
+                          </li>
+                          <li class="nav-item">
+                            <a class="nav-link imagearea-tab" data-toggle="tab" href="#imageArea1" role="tab" aria-controls="imageArea1" id="imageAreaTab1">
+                              画像
+                            </a>
+                          </li>
+                        </ul>
+                      	<div class="tab-content">
+
+                      		<div class="tab-pane active" id="textArea1" role="tabpanel">
+
+	                      		<div class="commentForm__textarea" id="textArea1">
+	                          	<textarea name="MESSAGE1" id="MESSAGE1" class="form-control line-message auto-height" rows="4" oninput="textCount(1)" placeholder="メッセージを入力">$!{MESSAGE1}</textarea>
+	                          	<div style="display: flex; justify-content: space-between; font-size:0.625rem; margin-top:5px; margin-bottom:-5px;height:15px;">
+	                          		<span class="count-error" style="color:red;font:bold 10pt 'MSP ゴシック'"></span>
+		                        		<span style="margin-left: auto"><span class="text-count">0</span>/$!{TEXT_MAX_COUNT}</span>
+	                        		</div>
+	                        	</div>
+
+	                        	<div class="commentTools">
+		                        <div class="commentTools__group">
+		                          <!--
+		                          <button type="button" class="iconButton" data-toggle="modal" data-target="#imageModal">
+		                            <i class="cil-image"></i>
+		                          </button>
+		                          <button type="button" class="iconButton">
+		                            <i class="cil-notes"></i>
+		                          </button>
+		                          -->
+		                          <button type="button" class="iconButton emoji-button" onclick="emojiCount(1)">
+		                            <i class="cil-smile"></i>
+		                          </button>
+		                          <div type="button" class="emoji-picker">
+		                            <emoji-picker id="EMOJI_PICKER1"></emoji-picker>
+		                          </div>
+		                        </div>
+		                        <div class="commentTools__group">
+		                          <button type="button" class="toolSubButton" onclick="setItem('MESSAGE1','displayname')">
+		                            友だち表示名
+		                          </button>
+		                          #if( $!{SCENARIO.size()} > 0 )
+			                          <select data-placeholder="連携URLを選択して下さい" class="chosen" id="CONNECT_URL1" onChange="connectSet('MESSAGE1','CONNECT_URL1')">
+			                          	<option></option>
+			                           #foreach( $!{scenario} in $!{SCENARIO})
+			                           	<option value="https://$!{SERVER_PLEFIX}auto.biz/$!{ACCOUNT}/registp/$!{scenario.fname}.htm?fid=[[lineid]]">$!{scenario.scenario}</option>
+			                           #end
+			                          </select>
+		                          #end
+		                        </div>
+		                      </div>
+
+                      		</div>
+                      		<div class="tab-pane" id="imageArea1" role="tabpanel">
+								<div class="card-body">
+									<div>
+										<button class="btn btn-primary col-sm-12 col-md-auto" type="button" data-toggle="modal" name="IMAGE_MODAL" data-boxid="1" data-target="#imageModal">画像選択</button>
+									</div>
+									<div class="col-md-3 mb-3 sellected-image" id="SELECTED_IMAGE1">
+									</div>
+									<input type="hidden" class="send_image" name="SEND_IMAGE1" id="SEND_IMAGE1" value="">
+								</div>
+                      		</div>
+                      	</div>
+
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+                <div class="card-body">
+                  <button type="button" class="btn btn-secondary" id="COPY_BOX">
+                    ＋ 入力欄を追加（最大5つまで）
+                  </button>
+                </div>
+              </div>
+              <div class="text-center">
+              #if( $!{EXEC_TYPE} == "DRAFT" || $!{EXEC_TYPE} == "BACK" )
+                  <button type="button" class="btn btn-primary btn-lg mx-auto px-5" id="MESSAGE_DRAFT">
+                    下書保存
+                  </button>
+              #end
+                  <button type="button" class="btn btn-primary btn-lg mx-auto px-5" id="MESSAGE_COMMIT">
+                    配信登録
+                  </button>
+
+              </div>
+               <div id="NOTICE" class="alert alert-info" role="alert" style="display:none;margin-top:10px;"></div>
+            </div>
+          </div>
+	       		<input type="hidden" name="QUE_ID" id="QUE_ID" value='$!{QUE_ID}'>
+	       		<input type="hidden" name="TEMP_ID" id="TEMP_ID" value='$!{TEMP_ID}'>
+                <input type="hidden" name="TAG_LIST" id="TAG_LIST" value='$!{TAG_JSON}'>
+                <input type="hidden" name="EXEC_TYPE" id="EXEC_TYPE" value="CHECK">
+          </form>
+        </main>
+      </div>
+		#parse( "include/c_footer.inc")
+    </div>
+    <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModal" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">画像送信</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body bg-light">
+          <span id="PROGRESS"></span>
+            <div class="nav-tabs-boxed">
+              <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item">
+                  <a class="nav-link active" data-toggle="tab" href="#new" role="tab" aria-controls="new" id="newFileTab">
+                    新規アップロード
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" data-toggle="tab" href="#uploaded" role="tab" aria-controls="uploaded" id="uploadedFileTab">
+                    アップロード済み
+                  </a>
+                </li>
+              </ul>
+              <div class="tab-content">
+                <div class="tab-pane active" id="new" role="tabpanel">
+                <form id="FILE_UPLOAD_FORM" method="post" enctype="multipart/form-data" action="line_upload.php">
+                  <div class="imageUploader" id="dropArea">
+                    <div class="imageUploader__icon">
+                      <i class="cil-camera"></i>
+                    </div>
+                    <div class="imageUploader__text">
+                      ここに画像をドロップするか、クリックして画像を選択してください。
+                    </div>
+                    <div class="imageUploader__text"><small>※8MBまでのファイルをアップロードできます</small></div>
+                    <div class="imageUploader__text"><small>※GIF,JPEG,PNG形式の画像のみ対応</small></div>
+                    <div class="imageUploader__text"><small>※アニメーションGIFはご利用できません</small></div>
+                    <div class="imageUploader__text"><small>※アップロード時に自動的に圧縮されます</small></div>
+                    <input type="file" accept="image/png,image/jpeg,image/gif" id="uploadFile">
+                    <span id="UPLOAD_ERR" style="font-weight:600;color:red;"></span>
+                  </div>
+
+                  	<div class="op_container">
+	                    <div class="op_inner">
+						    <div class="op_text">0%</div>
+						    <div class="op_ber"></div>
+					    </div>
+			  		</div>
+
+			  		<div class="row">
+		                <div class="col-4 col-md-3 mb-3">
+		                 <span id="previewArea"></span>
+		                </div>
+		            </div>
+				</form>
+                </div>
+
+                <div class="tab-pane" id="uploaded" role="tabpanel">
+                  <div class="row" style="height:400px;overflow-y:scroll;overflow-x:hidden;" id="uploadedFile">
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" id="CANCEL">キャンセル</button>
+            <button type="button" class="btn btn-primary" id="FILE_SELECT" data-boxid="">決定</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="listModal" tabindex="-1" role="dialog" aria-labelledby="listModal" aria-hidden="true">
+    	<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+    		<div class="modal-content">
+	    		<div class="modal-header">
+		    		<h5 class="modal-title">該当者</h5>
+		    		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		    			<span aria-hidden="true">×</span>
+		    		</button>
+		    	</div>
+		    	<div class="modal-body bg-light">
+		    		<div class="card">
+			    		<div class="card-body" id="FRIEND_TABLE">
+			    		</div>
+		    		</div>
+	    		</div>
+    		</div>
+    	</div>
+    </div>
+
+    <!-- CoreUI and necessary plugins-->
+	#parse( "include/js.inc")
+	<script type="text/javascript">
+	$(document).ready(function(){
+
+		var date = new Date();
+
+		textCount(1);
+
+		var count = $(".CARD_BOX").length;
+		if( count == 5 ){
+		  $("#COPY_BOX").hide();
+	  }
+
+		#if( $!{ADDRESS} == 2 )
+			$("#CONDITION_SET").trigger("click");
+    #end
+
+    #if
+    	( $!{SEND_TYPE} == 1 )$("#SEND_DATE").hide();
+    #end
+
+		// アップロード済み画像の表示
+		$("#uploadedFileTab").on("click",loadImage);
+		$("#newFileTab").on("click",initNewTab);
+
+
+		// 先月
+		$("#LAST_MONTH").on('click',function(){
+
+			// 先月
+			var last_month = new Date(date.getFullYear(), date.getMonth()-1, date.getDate());
+
+			// 先月末尾
+			var last_date = new Date(date.getFullYear(), date.getMonth(), 0);
+
+			// 先月　年
+			var last_year = last_month.getFullYear();
+
+
+			$("#CREATE_DATE_START").val( last_year + "/" + ("0" + (last_month.getMonth()+1)).slice(-2)  + "/" + "01" );
+			$("#CREATE_DATE_END").val( last_year + "/" + ("0" + (last_month.getMonth()+1)).slice(-2) + "/" + last_date.getDate())
+
+		});
+
+		// 今月
+		$("#THIS_MONTH").on('click',function(){
+
+			// 今月
+			var this_month = new Date(date.getFullYear(), date.getMonth()+1, date.getDate());
+
+			// 今月末尾
+			var this_date = new Date(date.getFullYear(), date.getMonth()+1, 0);
+
+			// 今月　年
+			var this_year = this_month.getFullYear();
+
+
+			$("#CREATE_DATE_START").val( this_year + "/" + ("0" + this_month.getMonth()).slice(-2)  + "/" + "01" );
+			$("#CREATE_DATE_END").val( this_year + "/" + ("0" + this_month.getMonth()).slice(-2) + "/" + this_date.getDate())
+		});
+
+		// 本日
+		$("#TODAY").on('click',function(){
+
+			//　今月
+			var this_month = new Date(date.getFullYear(), date.getMonth()+1, date.getDate());
+
+			// 今月　年
+			var this_year = this_month.getFullYear();
+
+			$("#CREATE_DATE_START").val( this_year + "/" + ("0" + this_month.getMonth()).slice(-2)  + "/" + date.getDate() );
+			$("#CREATE_DATE_END").val( this_year + "/" + ("0" + this_month.getMonth()).slice(-2) + "/" + date.getDate() )
+
+
+		});
+
+		// 全員に配信
+		$("#SEND_TYPE1").on('click',function(){
+			$("#filterSetting").collapse("hide");
+
+			var obj = document.forms["EXEC_FORM"];
+			$("#EXEC_TYPE").val("ALLSET");
+
+			jQuery.ajax({
+				type:"POST",
+				url:"php2java.php?file=LIN0031&if=3",
+				data:jQuery(obj).serialize(),
+				dataType:'json'
+			}).done(function(data){
+				var data_stringify = JSON.stringify(data);
+				var data_arr = JSON.parse(data_stringify);
+
+				$("#ALL").show();
+				$("#ALL").html("<strong>送信数：" + data_arr[0]["count"] +"</strong>");
+
+			}).fail(function(data){
+				alert("条件設定に失敗しました");
+			});
+		});
+
+		// 絞り込んで配信
+		$("#SEND_TYPE2").on('click',function(){
+			$("#ALL").hide();
+			if( $("#filterSetting").hasClass("show")){
+				$("#filterSetting").collapse("hide");
+			} else {
+				$("#filterSetting").collapse("show");
+			}
+		});
+
+		// 絞り込み条件の設定クリック
+		$("#CONDITION_SET").on('click',function(){
+			$("#ALL").hide();
+			$("#SEND_TYPE2").trigger("click");
+		});
+
+		// 登録後すぐに配信するクリック
+		$("#exampleRadios3").on('click',function(){
+			$("#SEND_DATE").hide();
+		});
+
+		// 予約日時を指定クリック
+		$("#exampleRadios4").on('click',function(){
+			$("#SEND_DATE").show();
+		});
+
+		// 条件設定
+		$("#CONDITION_COMMIT").on('click',function(){
+
+			var obj = document.forms["EXEC_FORM"];
+			$("#EXEC_TYPE").val("SET");
+
+			jQuery.ajax({
+				type:"POST",
+				url:"php2java.php?file=LIN0032&if=3",
+				data:jQuery(obj).serialize(),
+				dataType:'json'
+			}).done(function(data){
+				var data_stringify = JSON.stringify(data);
+				var data_arr = JSON.parse(data_stringify);
+
+				$("#DISP_CONDITION").show();
+				$("#CONDITION1").text(data_arr[0]["display_name"]);
+				$("#CONDITION2").text(data_arr[0]["create_date_start"]);
+				$("#CONDITION3").text(data_arr[0]["create_date_end"]);
+
+				if( data_arr[0]["mail_status"] == 0 ){
+					$("#CONDITION4").text("");
+				} else if( data_arr[0]["mail_status"] == 1 ){
+					$("#CONDITION4").text("全て");
+				} else if( data_arr[0]["mail_status"] == 2 ){
+					$("#CONDITION4").text("未連携");
+				} else if( data_arr[0]["mail_status"] == 3 ){
+					$("#CONDITION4").text("連携済み");
+				}
+				$("#CONDITION5").text(data_arr[0]["tag_name"]);
+				$("#CONDITION_TAG_VALUE").val(data_arr[0]["tag"]);
+				$("#SEND_COUNT").text(data_arr[0]["count"]);
+
+				if( data_arr[0]["count"] == 0 ){
+					$("#LIST_MODAL").hide();
+				} else {
+					$("#LIST_MODAL").show();
+				}
+
+
+			}).fail(function(data){
+				alert("条件設定に失敗しました");
+			});
+
+		});
+
+		// 条件リセット
+		$("#CONDITION_RESET").on('click',function(){
+
+			var obj = document.forms["EXEC_FORM"];
+			$("#EXEC_TYPE").val("RESET");
+
+			$("#DISPLAY_NAME").val("");
+			$("#CREATE_DATE_START").val("");
+			$("#CREATE_DATE_END").val("");
+			$("#CONNECT1").prop("checked",true);
+			$("#TAG").val("");
+
+			jQuery.ajax({
+				type:"POST",
+				url:"php2java.php?file=LIN0032&if=3",
+				data:jQuery(obj).serialize(),
+				dataType:'json'
+			}).done(function(data){
+				var data_stringify = JSON.stringify(data);
+				var data_arr = JSON.parse(data_stringify);
+
+				$("#DISP_CONDITION").hide();
+				$("#CONDITION1").text(data_arr[0]["display_name"]);
+				$("#CONDITION2").text(data_arr[0]["create_date_start"]);
+				$("#CONDITION3").text(data_arr[0]["create_date_end"]);
+				$("#CONDITION4").text(data_arr[0]["mail_status"]);
+				$("#CONDITION5").text(data_arr[0]["tag"]);
+				$("#SEND_COUNT").text(data_arr[0]["count"]);
+
+			}).fail(function(data){
+				alert("条件設定に失敗しました");
+			});
+
+		});
+
+		// 該当者表示
+		$("#FRIEND_LIST").on('click',function(){
+
+			var obj = document.forms["EXEC_FORM"];
+			obj.target ="_blank";
+			$("#EXEC_FORM").attr("action","php2java.php?file=LIN0020&if=3");
+			obj.submit();
+
+			$("#EXEC_FORM").attr("action","php2java.php?file=LIN0032&if=3");
+			obj.target ="_self";
+
+		});
+
+		// ファイル選択時の動作
+		$("#FILE_SELECT").on("click",function(){
+
+			var box_id = $(this).data("boxid");
+
+			// 選択された画像
+			var img_url = $("input:radio[name='originalImg']:checked").val();
+			var selectedImage = document.getElementById("SELECTED_IMAGE"+box_id);
+
+
+			// 初期化
+			var first = selectedImage.children[0];
+			if( first != null ){
+				selectedImage.removeChild(first);
+			}
+
+			// 選択された画像の表示
+			var img = document.createElement("img");
+			img.setAttribute("src",img_url);
+			img.setAttribute("id","SEND_IMAGE_PREVIEW");
+			img.setAttribute("class","img-thumbnail img-fluid");
+			selectedImage.appendChild(img);
+
+
+			// hiddenに渡す
+			$("#SEND_IMAGE"+box_id).val(img_url);
+
+			// モーダルを閉じる
+			$("#CANCEL").trigger("click");
+
+		});
+
+		// 配信登録
+		$("#MESSAGE_COMMIT, #MESSAGE_DRAFT").on('click',function(){
+
+			var box_cnt = $(".CARD_BOX").length;
+
+			for(let i= 1; i<= box_cnt; i++){
+
+				// 送信前にメッセージボックスの属性を連番にする
+				$("textarea.line-message").eq(i-1).attr("name","MESSAGE"+i);
+				$("textarea.line-message").eq(i-1).attr("id","MESSAGE"+i);
+				$("textarea.line-message").eq(i-1).attr("oninput","textCount("+ i + ")");
+				$("button.toolSubButton").eq(i-1).attr("onclick","setItem('MESSAGE"+ i + "','displayname')");
+				$("select.chosen").eq(i-1).attr("id","CONNECT_URL"+i);
+				$("select.chosen").eq(i-1).attr("onChange","connectSet('MESSAGE"+ i + "','CONNECT_URL"+ i + "')");
+				$(".send_image").eq(i-1).attr("name","SEND_IMAGE"+i);
+				$(".send_image").eq(i-1).attr("id","SEND_IMAGE"+i);
+				$("a.textarea-tab").eq(i-1).attr("id","textAreaTab"+i);
+				$("a.imagearea-tab").eq(i-1).attr("id","imageAreaTab"+i);
+				$("button[name='IMAGE_MODAL']").eq(i-1).attr("data-boxid", i);
+				$("div.sellected-image").eq(i-1).attr("id","SELECTED_IMAGE"+i);
+				$("button.emoji-button").eq(i-1).attr("onclick","emojiCount("+ i + ")");
+				$("emoji-picker").eq(i-1).attr("id","EMOJI_PICKER"+i);
+
+				// タブのactive状態をチェックしてactiveでない内容は送らない
+				if( $("#textAreaTab"+i).hasClass("active") ){
+					$(".send_image").eq(i-1).val("");
+					var selectedImage = document.getElementById("SELECTED_IMAGE"+i);
+					var first = selectedImage.children[0];
+					if( first != null ) {
+						selectedImage.removeChild(first);
+					}
+				} else {
+					$("textarea.line-message").eq(i-1).val("");
+					var error = $("MESSAGE"+i).next('div').find('.count-error')
+					error.removeClass("error-flg");
+					textCount(i)
+				}
+
+			}
+
+			// メッセージ未設定チェック
+			for(let i= 1; i<= box_cnt; i++){
+				if( ($("#MESSAGE"+i).val() === "") && ($("#SEND_IMAGE"+i).val() === "") ) {
+						$(window).scrollTop($('#MESSAGE1').position().top);
+						$('#MESSAGE1').focus();
+						$('#ERR_MSG2').text("配信メッセージは1つ以上設定して下さい");
+						$('#ERR_MSG2').addClass("error-flg");
+				} else {
+					$('#ERR_MSG2').text("");
+					$('#ERR_MSG2').removeClass("error-flg");
+					break;
+				}
+			}
+
+			// 文字数チェック
+			$("textarea.line-message").each(function(){
+
+				var text_count = $(this).val().length;
+				var error = $(this).next('div').find('.count-error')
+
+				if ( text_count > $!{TEXT_MAX_COUNT}) {
+
+					error.text("文字数の上限を超えています");
+					$(window).scrollTop($(this).position().top);
+					$(this).focus();
+					error.addClass("error-flg");
+
+	       } else {
+
+	    	   error.text("");
+	    	   error.removeClass("error-flg");
+
+	       }
+
+			});
+
+			if( $(this).attr("id") == "MESSAGE_COMMIT" ){
+
+				// 送信先がチェックされているかチェック
+				if ( $('input[id="SEND_TYPE1"]').prop('checked') || $('input[id="SEND_TYPE2"]').prop('checked') || $('input[id="SEND_TYPE3"]').prop('checked') ){
+
+					$('#ERR_MSG').text("");
+					$('#ERR_MSG').removeClass("error-flg");
+
+				}	else {
+
+					$(window).scrollTop(0);
+					$('#ERR_MSG').text("送信先を設定して下さい");
+					$('#ERR_MSG').addClass("error-flg");
+
+				}
+			}
+
+			// errorがあるかチェック
+			var error_flg = document.getElementsByClassName("error-flg").length;
+			if(error_flg >= 1) {
+				return
+			}
+
+			var obj = document.forms["EXEC_FORM"];
+
+			$("#EXEC_FORM").attr("action","php2java.php?file=LIN0032K&if=3");
+
+			// 下書保存の場合
+			if( $(this).attr("id") == "MESSAGE_DRAFT" ){
+				$("#EXEC_TYPE").val("DRAFT_ADD");
+
+				var elm = $("#NOTICE").attr('href'); //ページ内リンクのHTMLタグhrefから、リンクされているエリアidの値を取得
+
+				jQuery.ajax({
+					url:$("#EXEC_FORM").attr('action'),
+					type:"POST",
+					data:$("#EXEC_FORM").serialize(),
+					dataType: "json",
+				}).done(function(data){
+					var data_stringify = JSON.stringify(data);
+					var data_arr = JSON.parse(data_stringify);
+
+					//$('body,html').animate({scrollTop: 0}, 600); //500の数値が大きくなるほどゆっくりスクロール
+					$("#NOTICE").text("下書保存しました");
+
+					$("#NOTICE").fadeIn('1000');
+					$("#NOTICE").animate({top: 0}, 2000);
+					$("#NOTICE").fadeOut('2000');
+
+				}).fail(function(data){
+					//$('body,html').animate({scrollTop: 0}, 600); //500の数値が大きくなるほどゆっくりスクロール
+					$("#NOTICE").text("下書保存に失敗しました");
+
+					$("#NOTICE").fadeIn('1000');
+					$("#NOTICE").animate({top: 0}, 2000);
+					$("#NOTICE").fadeOut('2000');
+				});
+			} else {
+				$("#EXEC_TYPE").val("CHECK");
+				obj.submit();
+			}
+
+		});
+
+		//新規入力ボックス追加処理
+		$("#COPY_BOX").on('click', function () {
+
+		  count = count+1;
+
+		  var addInput = `
+	          <div class="card CARD_BOX" id="CARD_BOX` + count + `">
+	          <div class="card-body line-form">
+	            <div class="commentForm">
+             	<button type="button" class="close" aria-label="Close" onclick="removeBox('CARD_BOX` + count + `')">
+	              <span aria-hidden="true">×</span>
+	            </button>
+	              <ul class="nav nav-tabs" role="tablist">
+	                <li class="nav-item">
+	                  <a class="nav-link textarea-tab active" data-toggle="tab" href="#textArea` + count + `" role="tab" aria-controls="textArea` + count + `" id="textAreaTab` + count + `">
+	                    テキスト
+	                  </a>
+	                </li>
+	                <li class="nav-item">
+	                  <a class="nav-link imagearea-tab" data-toggle="tab" href="#imageArea` + count + `" role="tab" aria-controls="imageArea` + count + `" id="imageAreaTab` + count + `">
+	                    画像
+	                  </a>
+	                </li>
+	              </ul>
+
+	              <div class="tab-content">
+
+	              	<div class="tab-pane active" id="textArea` + count + `" role="tabpanel">
+
+		              <div class="commentForm__textarea" id="textArea` + count + `">
+		                <textarea name="MESSAGE` + count + `" id="MESSAGE` + count + `" class="form-control line-message auto-height" rows="4" oninput="textCount(` + count + `)" placeholder="メッセージを入力"></textarea>
+		                <div style="display: flex; justify-content: space-between; font-size:0.625rem; margin-top:5px; margin-bottom:-5px;height:15px;">
+		                	<span class="count-error" style="color:red;font:bold 10pt 'MSP ゴシック'"></span>
+	                	<span style="margin-left: auto"><span class="text-count">0</span>/$!{TEXT_MAX_COUNT}</span>
+            		</div>
+		              </div>
+
+	            <div class="commentTools">
+	              <div class="commentTools__group">
+
+	                <button type="button" class="iconButton emoji-button" onclick="emojiCount(` + count + `)">
+	                  <i class="cil-smile"></i>
+	                </button>
+	                <div type="button" class="emoji-picker">
+	                  <emoji-picker id="EMOJI_PICKER` + count + `"></emoji-picker>
+	                </div>
+	              </div>
+	              <div class="commentTools__group">
+	                <button type="button" class="toolSubButton" onclick="setItem('MESSAGE` + count + `','displayname')">
+	                  友だち表示名
+	                </button>
+					#if( $!{SCENARIO.size()} > 0 )
+                          <select data-placeholder="連携URLを選択して下さい" class="chosen" id="CONNECT_URL` + count + `" onChange="connectSet('MESSAGE` + count + `','CONNECT_URL` + count + `')">
+                          	<option></option>
+                           #foreach( $!{scenario} in $!{SCENARIO})
+                           	<option value="https://$!{SERVER_PLEFIX}auto.biz/$!{ACCOUNT}/registp/$!{scenario.fname}.htm?fid=[[lineid]]">$!{scenario.scenario}</option>
+                           #end
+                          </select>
+                     #end
+	              </div>
+	            </div>
+	          </div>
+	      	  <div class="tab-pane" id="imageArea` + count + `" role="tabpanel">
+				<div class="card-body">
+					<div>
+      				<button class="btn btn-primary col-sm-12 col-md-auto" type="button" data-toggle="modal" name="IMAGE_MODAL" data-boxid="` + count + `" data-target="#imageModal">画像選択</button>
+      				</div>
+					<div class="col-md-3 mb-3 sellected-image" id="SELECTED_IMAGE` + count + `"></div>
+					<input type="hidden" class="send_image" name="SEND_IMAGE` + count + `" id="SEND_IMAGE` + count + `" value="">
+				</div>
+      		  </div>
+	        </div>`;
+
+		  $('#MESSAGE_BOX').append(addInput);
+
+		  initEmojiPicker();
+		  initImageModal();
+		  initChosen();
+
+		  if( $(".CARD_BOX").length == 5 ){
+			  $("#COPY_BOX").hide();
+			  return false;
+		  }
+
+
+		});
+
+		// ドラッグ&ドロップエリアの取得
+		var fileArea = document.getElementById('dropArea');
+		var fileInput = document.getElementById('uploadFile');
+
+		// ドラッグオーバー時の処理
+		fileArea.addEventListener('dragover', function(e){
+		    e.preventDefault();
+		    fileArea.classList.add('dragover');
+		});
+
+		// ドラッグアウト時の処理
+		fileArea.addEventListener('dragleave', function(e){
+		    e.preventDefault();
+		    fileArea.classList.remove('dragover');
+		});
+
+		// ドロップ時の処理
+		fileArea.addEventListener('drop', function(e){
+		    e.preventDefault();
+		    fileArea.classList.remove('dragover');
+
+		    // ドロップしたファイルの取得
+		    var files = e.dataTransfer.files;
+
+		    // 取得したファイルをinput[type=file]へ
+		    fileInput.files = files;
+
+		    if(typeof files[0] !== 'undefined') {
+
+				fileUpload(files);
+
+		    } else {
+		        //ファイルが受け取れなかった際の処理
+		    }
+		});
+
+		// input[type=file]に変更があれば実行
+		fileInput.addEventListener('change',function(e){
+
+			var files = e.target.files;
+
+			if( typeof files[0] !== 'undefined'){
+				fileUpload(files);
+			}
+		});
+
+		initTagsSuggest();
+
+		// 初回に読み込んでおく
+		loadImage();
+		initImageModal();
+		initMessageBox(1,`$!{MESSAGE1}`,'$!{SEND_IMAGE1}');
+
+		#if( ${MESSAGE2} != "" || ${SEND_IMAGE2} != "" )
+			$("#COPY_BOX").trigger("click");
+			initMessageBox(2,`$!{MESSAGE2}`,'$!{SEND_IMAGE2}');
+			textCount(2);
+		#end
+		#if( ${MESSAGE3} != "" || $!{SEND_IMAGE3} != "" )
+			$("#COPY_BOX").trigger("click");
+			initMessageBox(3,`$!{MESSAGE3}`,'${SEND_IMAGE3}');
+			textCount(3);
+		#end
+		#if( ${MESSAGE4} != "" || ${SEND_IMAGE4} != "" )
+			$("#COPY_BOX").trigger("click");
+			initMessageBox(4,`$!{MESSAGE4}`,'$!{SEND_IMAGE4}');
+			textCount(4);
+			#end
+		#if( ${MESSAGE5} != "" || ${SEND_IMAGE5} != "" )
+			$("#COPY_BOX").trigger("click");
+			initMessageBox(5,`$!{MESSAGE5}`,'$!{SEND_IMAGE5}');
+			textCount(5);
+		#end
+		initChosen();
+
+	});
+
+	// 連携プルダウンを検索プルダウンに
+	function initChosen(){
+
+		// LINE連携用プルダウン
+	    $(".chosen").chosen({
+	    	width:"190px",
+        search_contains: true  ,
+        no_results_text:"一致するシナリオはありません"
+	    })
+
+	}
+
+	// 連携URLのセット
+	function connectSet(message_id,connect_id){
+
+    	var elm = document.getElementById(message_id);
+    	var val = $("#" + connect_id).val();
+
+		if (window.navigator.appName.indexOf('Microsoft') != -1) { // IE
+			elm.focus();
+			var selection = document.selection.createRange();
+			selection.text = val;
+		} else {
+			var before = elm.value.substring(0, elm.selectionStart);
+			var after = elm.value.substring(elm.selectionEnd, elm.value.length);
+			elm.value = before + val + after;
+//			elm.scrollTop = top;
+			elm.setSelectionRange((before + val).length, (before + val).length);
+			elm.focus();
+		}
+
+		// 文字カウント追加
+		var text_count = elm.value.length;
+		var target = $(elm).next('div').find('.text-count')
+		if($!{TEXT_MAX_COUNT} < text_count){
+			target.css({'color':'red','font-weight':'bold', 'font-size':'12px'});
+		} else {
+			target.css({'color':'','font-weight':'', 'font-size':''});
+		}
+		target.text(text_count);
+	}
+
+
+	// メッセージエリアを削除
+	function removeBox(card_id){
+		$("#"+card_id).remove();
+		if( $(".CARD_BOX").length < 5 ){
+			$("#COPY_BOX").show();
+		}
+		initImageModal();
+	}
+
+
+	// メッセージボックス初期表示
+	function initMessageBox(box_id,text_value,image_value){
+
+		$("#MESSAGE"+box_id).val(text_value);
+		$("#SEND_IMAGE"+box_id).val(image_value);
+
+		if( image_value != "" ){
+			var selectedImage = document.getElementById("SELECTED_IMAGE"+box_id);
+			var img = document.createElement("img");
+			img.setAttribute("src",image_value);
+			img.setAttribute("id","SEND_IMAGE_PREVIEW");
+			img.setAttribute("class","img-thumbnail img-fluid");
+			selectedImage.appendChild(img);
+
+			initChosen();
+			$("#imageAreaTab"+box_id).tab('show');
+		}
+	}
+
+	function initImageModal(){
+
+		if( $("button[name='IMAGE_MODAL']").length > 0 ){
+			$("button[name='IMAGE_MODAL']").on("click",function(){
+
+				var box_id = $(this).data("boxid");
+				$("#FILE_SELECT").data("boxid",box_id);
+			});
+		}
+	}
+
+	// 新規アップロードタブの初期化
+	function initNewTab(){
+
+        // タブの切り替え
+		$("#newFileTab").addClass("active");
+		$("#uploadedFileTab").removeClass("active");
+		$("#new").show();
+		$("#uploaded").hide();
+		$("#previewArea").empty();
+		$("#UPLOAD_ERR").text("");
+		$("#FILE_SELECT").hide();
+	}
+
+	//アップロード予定のファイル名の拡張子が許可されているか確認する関数
+	function checkExt(filename){
+
+		var allow_exts = new Array('jpg', 'jpeg', 'png','jpeg','gif');
+
+		//比較のため小文字にする
+		var ext = getExt(filename).toLowerCase();
+
+		//許可する拡張子の一覧(allow_exts)から対象の拡張子があるか確認する
+		if (allow_exts.indexOf(ext) === -1) return false;
+		return true;
+	}
+
+	//ファイル名から拡張子を取得する関数
+	function getExt(filename){
+
+		var pos = filename.lastIndexOf('.');
+		if (pos === -1) return '';
+		return filename.slice(pos + 1);
+	}
+
+	// ファイルアップロード
+	function fileUpload(f){
+    	var formData = new FormData();
+        for (var i=0; i<f.length; i++) {
+            formData.append("upload",f[i]);
+        }
+
+        if( checkExt(f[0].name) == false ){
+        	alert("拡張子を確認して下さい");
+        	return false;
+        }
+
+        //ファイルが正常に受け取れた際の処理
+		jQuery.ajax({
+			async: true,
+			type:'POST',
+			contentType: false,		// contentTypeもfalseに指定
+			processData:false,		// ajaxがdataを整形しない
+			url: './line_upload.php',
+			data:formData,
+
+			// 通信成功
+			success:function(result,textStatus,xhr){
+				if( result != "" ){
+					var data_arr = JSON.parse(result);
+
+					// エラーの場合
+					if( data_arr[2] != "" ){
+						jQuery("#UPLOAD_ERR").html(data_arr[2]);
+						return false;
+					}
+				}
+
+				imagesProgress();
+				photoPreview('onChenge',f[0]);
+			},
+
+			// 通信失敗
+			error:function(xhr,textStatus,error){
+				jQuery("#UPLOAD_ERR").html(error);
+			}
+
+		});
+	}
+
+	// 画像の表示
+	function loadImage(){
+
+        // タブの切り替え
+		$("#newFileTab").removeClass("active");
+		$("#uploadedFileTab").addClass("active");
+		$("#new").hide();
+		$("#uploaded").show();
+		$("#FILE_SELECT").show();
+
+		jQuery.ajax({
+			url:"line_choice.php",
+			cache: false,
+
+			// 通信成功
+			success:function(result,textStatus,xhr){
+
+				var data_arr = JSON.parse(result);
+
+				// エラーの場合
+				if( data_arr[2] != "" ){
+					jQuery("#uploadedFile").html(data_arr[2]);
+					return false;
+				}
+
+				jQuery("#uploadedFile").html(data_arr[0]);
+				jQuery("#PROGRESS").html(data_arr[1]);
+			},
+
+			// 通信失敗
+			error:function(xhr,textStatus,error){
+				jQuery("#uploadedFile").html(error);
+			}
+		});
+	}
+
+	// イメージ画像のプレビュー
+	function photoPreview(event,f=null){
+		var file = f;
+		if( file == null ){
+			file == event.target.files[0];
+		}
+
+		var reader = new FileReader();
+		var preview = document.getElementById("previewArea");
+		var previewImage = document.getElementById("previewImage");
+
+		if( previewImage != null ){
+			preview.removeChild(previewImage);
+		}
+
+		reader.onload = function(event){
+			var img = document.createElement("img");
+			img.setAttribute("src",reader.result);
+			img.setAttribute("id","previewImage");
+			img.setAttribute("class","img-thumbnail img-fluid");
+			preview.appendChild(img);
+		};
+		reader.readAsDataURL(file);
+	}
+
+	   // 画像の読み込み状況をプログレス表示
+    function imagesProgress(){
+
+		jQuery(".op_text").css("visibility","visible");
+
+		var preview = document.querySelector("#previewArea");
+
+        // imagesLoadedライブラリでbody要素内の画像の読み込み状況を監視
+        var imgLoad = imagesLoaded('body');
+
+        // body要素内の画像の総数を変数へ格納
+        var imgTotal = imgLoad.images.length;
+
+        // 読み込みが完了した画像の枚数を格納する変数
+        var imgLoaded = 0;
+
+        // .op_berのwidthの値を格納する変数
+        var current = 0;
+
+        // 1秒に60回のペースで画像の読み込み状況をチェック
+        progressTimer = setInterval(updateProgress, 1000 / 60);
+
+        // imagesLoadedライブラリを利用し、画像が読み込まれるごとにimgLoadedを加算
+        imgLoad.on('progress', function () {
+            imgLoaded++;
+        });
+
+        // 画像の読み込み状況をもとに
+        // .op_textのテキストの値と
+        // .op_berのwidthの値を変更します
+        // このupdateProgress関数は上に書いたsetInterval()により1秒に60回のペースで呼び出されます
+        function updateProgress(){
+
+            // 画像が何％読み込まれたか
+            var target = (imgLoaded / imgTotal) * 100;
+
+            // currentとtargetをもとにイージングをかける
+            // 100に近づくにつれ遅くなる
+            current += (target - current) * 0.1;
+
+            // .op_textのテキストを反映
+            // Math.floor()関数で小数点以下を切り捨て
+            $('.op_text').text(Math.floor(current) + '%');
+
+            // .op_berのwidthを反映
+            $('.op_ber').css({width: current + '%'});
+
+            // アニメーション終了処理
+            if(current >= 100){
+
+                // clearInterval()で上に書いたsetInterval()を解除する
+                clearInterval(progressTimer);
+
+                // ここに画像が読み込み終わった後の処理を書く
+                setTimeout(function(){
+                    $('.op_container').fadeOut();
+                }, 1000);
+
+            }
+
+            // currentが99.9よりも大きければ100としてアニメーション終了処理へ
+            if(current > 99.9){
+                current = 100;
+            }
+        }
+    }
+
+
+	// 差し込み項目
+	function setItem(target,item){
+
+		var elm = document.getElementById(target);
+		var str = "[[" + item + "]]";
+
+		if (window.navigator.appName.indexOf('Microsoft') != -1) { // IE
+			elm.focus();
+			var selection = document.selection.createRange();
+			selection.text = str;
+		} else {
+			var before = elm.value.substring(0, elm.selectionStart);
+			var after = elm.value.substring(elm.selectionEnd, elm.value.length);
+			elm.value = before + str + after;
+//			elm.scrollTop = top;
+			elm.setSelectionRange((before + str).length, (before + str).length);
+			elm.focus();
+		}
+		// 文字カウント追加
+		var text_count = elm.value.length;
+		var target = $(elm).next('div').find('.text-count')
+		if($!{TEXT_MAX_COUNT} < text_count){
+			target.css({'color':'red','font-weight':'bold', 'font-size':'12px'});
+		} else {
+			target.css({'color':'','font-weight':'', 'font-size':''});
+		}
+		target.text(text_count);
+
+	}
+
+	// 文字数カウント
+	function textCount(number, emojiLength) {
+		var message = document.getElementById('MESSAGE' + number );
+		var send_text = message.value;
+		var text_count = send_text.length;
+		var target = $(message).next('div').find('.text-count');
+		var error = $(message).next('div').find('.count-error');
+
+		// 引数にemojiLengthがあればプラス
+		if(emojiLength != null) {
+			text_count = text_count + emojiLength;
+		}
+
+		if($!{TEXT_MAX_COUNT} < text_count){
+			target.css({'color':'red','font-weight':'bold'});
+			error.text("文字数の上限を超えています");
+
+		} else {
+			target.css({'color':'','font-weight':''});
+			error.text("");
+		}
+
+		target.text(text_count);
+	}
+
+	// 絵文字カウント
+	function emojiCount(number) {
+
+		// 絵文字要素を取得
+  	var emojiPicker = document.getElementById("EMOJI_PICKER" + number)
+	  var emojiList = emojiPicker.shadowRoot.querySelectorAll('.emoji');
+
+		// クリックした絵文字の文字数を追加
+	  emojiList.forEach(function(emoji) {
+		  emoji.addEventListener('click', function() {
+			  var selectedEmoji = this.innerHTML;
+			  var emojiLength = selectedEmoji.length;
+			  textCount(number, emojiLength);
+		  });
+	  });
+
+	}
+
+	// 該当者表示
+	function displayFriend(page){
+
+		var mail_status = $("#CONDITION4").text();
+		if( mail_status == "" ){
+			mail_status = 0;
+		} else if( mail_status == "全て" ){
+			mail_status = 1;
+		} else if( mail_status == "未連携"){
+			mail_status = 2;
+		} else if( mail_status == "連携済み" ){
+			mail_status = 3;
+		}
+
+		jQuery.ajax({
+			url:"./php2java.php?file=LIN0031&if=3",
+			cache: false,
+			type:"POST",
+			data:{
+				EXEC_TYPE:'DISPLAY_FL',
+				DISPLAY_NAME: $("#CONDITION1").text(),
+				CREATE_DATE_START:$("#CONDITION2").text(),
+				CREATE_DATE_END:$("#CONDITION3").text(),
+				MAIL_STATUS:mail_status,
+				TAG:$("#CONDITION_TAG_VALUE").val(),
+				NOW_PAGE:page
+			},
+
+			// 通信成功
+			success:function(result,textStatus,xhr){
+
+				// セッションタイムアウト時
+				if( result.match("Login") ) {
+					location.reload();
+					return false;
+				}
+				// 表示を入れ替え
+				jQuery("#FRIEND_TABLE").html(result);
+			},
+
+			// 通信失敗
+			error:function(xhr,textStatus,error){
+				var error = jQuery.parseJSON(jqXHR.responseText);
+				// メッセージを表示
+				jQuery("#FRIEND_TABLE").text(error.responseMessage );
+				jQuery("#FRIEND_TABLE").fadeIn('1000');
+				jQuery("#FRIEND_TABLE").animate({top: 0}, 2000);
+				jQuery("#FRIEND_TABLE").fadeOut('2000');
+			}
+		});
+
+	}
+
+	// 配信対象の友だちを表示
+	function displayAP(page){
+
+		// ajaxでリストを取得
+		jQuery.ajax({
+		type: 'POST',
+		cache: false,
+		url: "php2java.php?file=LIN0032&if=3",
+		data: {
+			EXEC_TYPE:'DISPLAY_AP',
+			QUE_ID:$!{QUE_ID},
+			NOW_PAGE:page
+
+		},
+		}).fail(function(jqXHR, textStatus, errorThrown){
+
+			var error = jQuery.parseJSON(jqXHR.responseText);
+			// メッセージを表示
+			jQuery("#friendTable").text(error.responseMessage );
+			jQuery("#friendTable").fadeIn('1000');
+			jQuery("#friendTable").animate({top: 0}, 2000);
+			jQuery("#friendTable").fadeOut('2000');
+
+		}).done(function(res){
+
+			// セッションタイムアウト時
+			if( res.match("Login") ) {
+
+				location.reload();
+				return false;
+			}
+
+			// 作成したHTMLを差し込む
+			jQuery("#FRIEND_TABLE").html(res);
+
+		});
+	}
+
+	</script>
+  </body>
+</html>

@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+
+<!-- データベース作成（セットアップ用）-->
+
+<insert id="createDB">
+	CREATE DATABASE $SCHEMA$
+</insert>
+
+<!-- アカウント情報取得 by BasicId-->
+<select id="getAccountInfoByBasicId" resultClass="dto.Entity.LineAccount">
+	SELECT
+		line_account_id,
+		account_name,
+		admin_use,
+		basic_id,
+		chanel_id,
+		chanel_secret,
+		chanel_access_token,
+		liff_id,
+		`limit`,
+		limit_notify,
+		send_limit,
+		login_chanel_id,
+		login_chanel_secret
+	FROM
+		line_admin.line_account
+	WHERE
+		basic_id = #BASIC_ID# AND
+		del_flg = 0
+</select>
+
+<!-- アカウント情報取得 -->
+<select id="getAccountInfoByAccountName" resultClass="dto.Entity.LineAccount">
+	SELECT
+		line_account_id,
+		account_name,
+		admin_use,
+		basic_id,
+		chanel_id,
+		chanel_secret,
+		chanel_access_token,
+		liff_id,
+		`limit`,
+		limit_notify,
+		send_limit,
+		login_chanel_id,
+		login_chanel_secret
+	FROM
+		line_admin.line_account
+	WHERE
+		account_name = #ACCOUNT_NAME# AND
+		admin_use = 1 AND
+		del_flg = 0
+</select>
+
+<!-- アカウント情報取得 by account id -->
+<select id="getAccountInfoByAccountId" resultClass="dto.Entity.LineAccount">
+	SELECT
+		line_account_id,
+		account_name,
+		admin_use,
+		basic_id,
+		chanel_id,
+		chanel_secret,
+		chanel_access_token,
+		liff_id,
+		`limit`,
+		limit_notify,
+		send_limit,
+		login_chanel_id,
+		login_chanel_secret
+	FROM
+		line_admin.line_account
+	WHERE
+		line_account_id = #LINE_ACCOUNT_ID# AND
+		admin_use = 1 AND
+		del_flg = 0
+</select>
+
+<!-- アカウント情報取得 -->
+<select id="getAccountInfo" resultClass="dto.Entity.LineAccount">
+	SELECT
+		line_account_id,
+		account_name,
+		basic_id,
+		chanel_id,
+		chanel_secret,
+		chanel_access_token,
+		liff_id,
+		`limit`,
+		limit_notify,
+		free_flg,
+		send_limit,
+		login_chanel_id,
+		login_chanel_secret
+	FROM
+		line_admin.line_account
+	WHERE
+		line_account_id = #LINE_ACCOUNT_ID# AND
+		del_flg = 0
+</select>
+
+
+<!-- LINEアカウント情報登録 -->
+<insert id="addLineAccount">
+	INSERT INTO
+		line_admin.line_account
+	(
+		account_name,
+		basic_id,
+		chanel_id,
+		chanel_secret,
+		chanel_access_token,
+		create_date,
+		update_date
+	) VALUES (
+		#ACCOUNT_NAME#,
+		#BASIC_ID#,
+		#CHANEL_ID#,
+		#CHANEL_SECRET#,
+		#CHANEL_ACCESS_TOKEN#,
+		current_timestamp(),
+		current_timestamp()
+	)
+</insert>
+
+<!-- アカウント情報 更新 -->
+<update id="updLineAccount">
+	UPDATE
+		line_admin.line_account
+	SET
+	<isNotEmpty property="BASIC_ID" close=",">
+		basic_id = #BASIC_ID#
+	</isNotEmpty>
+	<isNotEmpty property="CHANEL_ID" close=",">
+		chanel_id = #CHANEL_ID#
+	</isNotEmpty>
+	<isNotEmpty property="CHANEL_SECRET" close=",">
+		chanel_id = #CHANEL_SECRET#
+	</isNotEmpty>
+	<isNotEmpty property="CHANEL_ACCESS_TOKEN" close=",">
+		chanel_access_token = #CHANEL_ACCESS_TOKEN#
+	</isNotEmpty>
+	<isNotEmpty property="LOGIN_CHANEL_ID" close=",">
+		login_chanel_id = #LOGIN_CHANEL_ID#
+	</isNotEmpty>
+	<isNotEmpty property="LOGIN_CHANEL_SECRET" close=",">
+		login_chanel_secret = #LOGIN_CHANEL_SECRET#
+	</isNotEmpty>
+	<isNotEmpty property="LIFF_ID" close=",">
+		liff_id = #LIFF_ID#
+	</isNotEmpty>
+	<isNotEmpty property="LIMIT" close=",">
+		`limit` = #LIMIT#
+	</isNotEmpty>
+	<isNotEmpty property="LIMIT_NOTIFY" close=",">
+		limit_notify = #LIMIT_NOTIFY#
+	</isNotEmpty>
+	<isNotEmpty property="SEND_LIMIT" close=",">
+		send_limit = #SEND_LIMIT#
+	</isNotEmpty>
+		update_date = NOW()
+	WHERE
+		line_account_id = #LINE_ACCOUNT_ID#
+</update>
+
+	<!-- LINEアカウント削除-->
+<delete id="delLineAccount">
+	DELETE FROM
+		line_admin.line_account
+	WHERE
+		line_account_id = #LINE_ACCOUNT_ID#
+</delete>
+
+</sqlMap>

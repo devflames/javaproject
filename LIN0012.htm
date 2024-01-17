@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<!--
+* CoreUI Pro based Bootstrap Admin Template
+* @version v3.2.0
+* @link https://coreui.io/pro/
+* Copyright (c) 2020 creativeLabs ?ukasz Holeczek
+* License (https://coreui.io/pro/license)
+-->
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="description" content="CoreUI - Open Source Bootstrap Admin Template">
+    <meta name="author" content="?ukasz Holeczek">
+    <meta name="keyword" content="Bootstrap,Admin,Template,Open,Source,jQuery,CSS,HTML,RWD,Dashboard">
+    <title>オートビズ管理画面</title>
+    <!-- Main styles for this application-->
+	#parse( "include/style.inc")
+  </head>
+
+  <body class="c-app">
+	#parse( "include/sidebar.inc")
+    <div class="c-wrapper">
+	#parse( "include/global_header.inc")
+      <div class="c-body">
+        <main class="c-main">
+          <div class="container-fluid">
+            <div class="fade-in">
+            	<div class="mb-4 d-flex align-items-center justify-content-between">
+	              <h1 class="h4 mb-3">
+	                LINE連携設定
+	              </h1>
+	              <div>
+	                <a href="javascript:void(0);" data-toggle="modal" data-target="#resetModal">
+	                  <button class="btn btn-danger btn-sm" id="RESET">
+	                    連携を解除
+	                  </button>
+	                </a>
+	              </div>
+              </div>
+
+              #if ( $!{MSG} )
+              <div style="color:#71aae3;font:bold 11pt 'MSP ゴシック';">$!{MSG}</div>
+          	  #end
+
+              #if( $!{TAB_TYPE} == 1 )
+             	#set( $tab_type1 = "active" )
+             	#set( $tab_type2 = "" )
+             	#set( $tab_type3 = "" )
+              #elseif( $!{TAB_TYPE} == 2 )
+             	#set( $tab_type1 = "" )
+             	#set( $tab_type2 = "active" )
+             	#set( $tab_type3 = "" )
+              #elseif( $!{TAB_TYPE} == 3 )
+             	#set( $tab_type1 = "" )
+             	#set( $tab_type2 = "" )
+             	#set( $tab_type3 = "active" )
+              #end
+              <div class="nav-tabs-boxed">
+                <ul class="nav nav-tabs" role="tablist">
+                  <li class="nav-item">
+                    <a class="nav-link $tab_type1" data-toggle="tab" href="#account" role="tab" aria-controls="pc">
+                      LINE公式アカウントチャンネル
+                      <small>（Messaging API）</small>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link $tab_type2" data-toggle="tab" href="#login" role="tab" aria-controls="sp">
+                      LINEログインチャンネル
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link $tab_type3" data-toggle="tab" href="#other" role="tab" aria-controls="sp">
+                      その他の設定
+                    </a>
+                  </li>
+                </ul>
+
+                <div class="tab-content">
+
+                  <div class="tab-pane $tab_type1" id="account" role="tabpanel">
+                   <form action="php2java.php?file=LIN0012&if=3" method="POST">
+                    <div class="text-danger">通常以下の情報は変更の必要はありません</div>
+                    <hr>
+                    <div class="row form-group">
+                      <label class="form-label col-lg-3" for="text-input">
+                        LINE公式アカウントID
+                        <small class="d-block">(ベーシック ID)</small>
+                      </label>
+                      <div class="col-lg-9">
+                        <div>$!{LINE_ACCOUNT.basic_id}</div>
+                      </div>
+                    </div>
+                    <div class="row form-group">
+                      <label class="form-label col-lg-3" for="text-input">
+                        Channel ID
+                      </label>
+                      <div class="col-lg-9">
+                        <div>$!{LINE_ACCOUNT.chanel_id}</div>
+                      </div>
+                    </div>
+                    <div class="row form-group">
+                      <label class="form-label col-lg-3" for="text-input">
+                        Channel Secret
+                      </label>
+                      <div class="col-lg-9">
+                      	#if( $!{LINE_ACCOUNT.chanel_secret} != "" )
+                        <div>登録済み</div>
+                        #else
+                        <div>未登録</div>
+                        #end
+                      </div>
+                    </div>
+                    <div class="row form-group editLabelSwitcher">
+                      <label class="form-label col-lg-3" for="text-input">
+                        Channel access token
+                        <small class="d-block">(long-lived)</small>
+                      </label>
+                      #if( $!{LINE_ACCOUNT.chanel_access_token} != "" )
+                      <div class="col-lg-9">
+                      	<span class="editLabelSwitcher__label">
+                        登録済み
+                        </span>
+                        <button class="btn btn-pill btn-sm btn-secondary ml-2 editLabelSwitcher__icon" type="button">変更する</button>
+
+                         <div class="input-group editLabelSwitcher__form">
+                            <div class="input-group mb-3">
+                              <input type="text" class="form-control" value="" placeholder="Channel access token">
+                              <div class="input-group-append">
+                                <button class="btn btn-secondary TAB_EDIT">変更</button>
+                              </div>
+                            </div>
+                         </div>
+
+                      </div>
+                      #else
+                      <div class="col-lg-9">
+                        <span class="editLabelSwitcher__label">
+                        未登録
+                        </span>
+                        <button class="btn btn-pill btn-sm btn-secondary ml-2 editLabelSwitcher__icon" type="button">登録する</button>
+
+                         <div class="input-group editLabelSwitcher__form">
+                            <div class="input-group mb-3">
+                              <input type="text" class="form-control" value="" placeholder="Channel access token">
+                              <div class="input-group-append">
+                                <button class="btn btn-secondary TAB_EDIT">登録</button>
+                              </div>
+                            </div>
+                         </div>
+
+                      </div>
+                      #end
+
+                    </div>
+                    <div class="row form-group">
+                      <label class="form-label col-lg-3" for="text-input">
+                        Webhook URL
+                      </label>
+                      <div class="col-lg-9">
+                        <div class="input-group mb-3">
+                          <input type="text" class="form-control" placeholder="" id="WEBHOOK_URL" value="$!{WEBHOOK}">
+                          <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button" id="COPY">コピー</button>
+                          </div>
+                        </div>
+                        <small id="COPY_MESSAGE" style="display:none;text-align:right;color:#000000;">Webhook URLをコピーしました</small>
+                      </div>
+                    </div>
+                    <input type="hidden" name="EXEC_TYPE" value="EDIT">
+                    <input type="hidden" name="TAB_TYPE" value="1">
+                 </form>
+                  </div>
+
+                  <div class="tab-pane $tab_type2" id="login" role="tabpanel">
+                    <form action="php2java.php?file=LIN0012&if=3" method="POST">
+                    <div class="text-danger">通常以下の情報は変更の必要はありません</div>
+                    <hr>
+                    <div class="row form-group">
+                      <label class="form-label col-lg-3" for="text-input">
+                        Channel ID
+                      </label>
+                      <div class="col-lg-9">
+                        <div>$!{LINE_ACCOUNT.login_chanel_id}</div>
+                      </div>
+                    </div>
+                    <div class="row form-group editLabelSwitcher">
+                      <label class="form-label col-lg-3" for="text-input">
+                        Channel Secret
+                      </label>
+                      #if( $!{LINE_ACCOUNT.login_chanel_secret} != "" )
+                      <div class="col-lg-9">
+                      	<span class="editLabelSwitcher__label">
+                        登録済み
+                        </span>
+                        <button class="btn btn-pill btn-sm btn-secondary ml-2 editLabelSwitcher__icon" type="button">変更する</button>
+
+                         <div class="input-group editLabelSwitcher__form">
+                            <div class="input-group mb-3">
+                              <input type="text" class="form-control" value="" placeholder="Channel Secret">
+                              <div class="input-group-append">
+                                <button class="btn btn-secondary TAB_EDIT">変更</button>
+                              </div>
+                            </div>
+                         </div>
+                      </div>
+                      #else
+                      <div class="col-lg-9">
+                      	<span class="editLabelSwitcher__label">
+                        未登録
+                        </span>
+                        <button class="btn btn-pill btn-sm btn-secondary ml-2 editLabelSwitcher__icon" type="button">登録する</button>
+
+                         <div class="input-group editLabelSwitcher__form">
+                            <div class="input-group mb-3">
+                              <input type="text" class="form-control" value="" placeholder="Channel Secret">
+                              <div class="input-group-append">
+                                <button class="btn btn-secondary TAB_EDIT">登録</button>
+                              </div>
+                            </div>
+                         </div>
+                      </div>
+                      #end
+                    </div>
+                    <input type="hidden" name="EXEC_TYPE" value="EDIT">
+                    <input type="hidden" name="TAB_TYPE" value="2">
+                    </form>
+                  </div>
+
+                  <div class="tab-pane $tab_type3" id="other" role="tabpanel">
+                  	<form action="php2java.php?file=LIN0012&if=3" method="POST">
+                    <div class="row form-group">
+                      <label class="form-label col-lg-3" for="text-input">
+                        無料メッセージ上限数<span class="badge bg-primary text-white ml-2">必須</span>
+                      </label>
+                      <div class="col-lg-9">
+                        <input class="form-control" id="LIMIT" type="text" name="LIMIT" placeholder="" required value="$!{LIMIT}">
+                      </div>
+                    </div>
+                    <div class="row form-group">
+                      <label class="form-label col-lg-3" for="text-input">
+                        上限警告通知先メールアドレス
+                      </label>
+                      <div class="col-lg-9">
+                        <input class="form-control" id="LIMIT_NOTIFY" type="text" name="LIMIT_NOTIFY" value="$!{LIMIT_NOTIFY}" placeholder="">
+                      </div>
+                    </div>
+                    #if( $!{SEND_LIMIT} == 1 )
+                    	#set( $checked = "checked" )
+                    #else
+                    	#set( $checked = "" )
+                    #end
+                    <div class="row form-group">
+                      <label class="form-label col-lg-3" for="text-input">
+                        メッセージの制限
+                      </label>
+                      <div class="col-lg-9">
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="checkbox" name="SEND_LIMIT" id="SEND_LIMIT" value="1" $checked>
+                          <label class="form-check-label" for="SEND_LIMIT">制限数を超えたらメッセージを送信しないようにする</label>
+                        </div>
+                      </div>
+                    </div>
+                    <hr>
+                    <div class="d-flex my-3 justify-content-center">
+                      <button type="button" class="btn btn-primary mx-2 px-lg-5 TAB_EDIT">変更</button>
+                    </div>
+                    <input type="hidden" name="EXEC_TYPE" value="EDIT">
+                    <input type="hidden" name="TAB_TYPE" value="3">
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+	#parse( "include/c_footer.inc")
+    </div>
+
+    <div class="modal fade" id="resetModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="listSettingModal">LINE公式アカウント($!{LINE_ACCOUNT.basic_id})との連携を解除します。</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group" id="DEL_LABEL">
+             #if( $!{RESET_CHECK_FLG} == 1 )
+             	<span style="color:#E74C3C; font-weight: bold;">　応答設定「Webhook」の設定がonになっています。</span><br><br>
+             #end
+            	　LINE公式アカウント($!{LINE_ACCOUNT.basic_id}) の<a href="https://manager.line.biz/account/$!{BASIC_ID}/setting/messaging-api" class="" target="_blank">Messaging API「Webhook URL」</a>が<br>
+            	「$!{WEBHOOK}」に設定されている場合、<br><br>
+            	　<a href="https://manager.line.biz/account/$!{BASIC_ID}/setting/response" class="" target="_blank">応答設定「Webhook」</a>の設定をoffに変更後
+            	[解除]を押してください。
+            	#if( $!{ASP_PLAN} == 2 )
+	            	#set( $url = "https://autobiz.help/basic/kanri/line/archives/33122/" )
+            	#elseif( $!{ASP_PLAN} == 4 )
+	            	#set( $url = "https://autobiz.help/pro/kanri/line/archives/34789/")
+            	#else
+	            	#set( $url ="https://autobiz.help/basic/kanri/line/archives/33122/")
+            	#end
+            	<a href="$!{url}" target="_BLANK">
+            		<i class="help-button">?</i>
+           		</a>
+            	 <br><br>
+            	　※注意点※<br>
+            	・友だち情報やメッセージ情報などすべてのデータにアクセスできなくなります。<br>
+            	・この操作の取消、データ復旧を行うことはできません。<br>
+            	・LINE公式アカウントは削除されません。<br>
+            	<div  class="form-group row" style="margin: 15px 0px -20px 0px; text-align: center; display: block;">
+            		<label><input type="checkbox" id="RESET_AGREEMENT" value="1" onchange="checkReset();">&nbsp;&nbsp;&nbsp;&nbsp;注意書きを確認の上、連携設定を解除する。</label>
+            	</div>
+
+            </div>
+          </div>
+          <div class="modal-footer">
+          <form action="php2java.php?file=LIN0011ST1&if=3" method="POST">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">キャンセル</button>
+            <button type="submit" id="RESET_BUTTON"  class="btn btn-primary" disabled>解除</button>
+            <input type="hidden" id="FILE_NAME" name="FILE_NAME" value="LIN0012.htm">
+            <input type="hidden" name="EXEC_TYPE" value="RESET">
+          </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- CoreUI and necessary plugins-->
+	#parse( "include/js.inc")
+	<script type="text/javascript">
+	$(document).ready(function(){
+
+		// WEBHOOK URLコピー
+		$("#COPY").click(function(){
+
+			// 選択を全てクリア
+			window.getSelection().removeAllRanges();
+
+			var element = document.getElementById("WEBHOOK_URL");
+
+			//rangeオブジェクトの作成
+			//var range = document.createRange();
+
+			//取得した要素の内側を範囲とする
+			//range.selectNodeContents(element);
+
+			//範囲を選択状態にする
+			//window.getSelection().addRange(range);
+
+			element.select();
+
+			var result = document.execCommand('copy');
+
+			if( result ) {
+				jQuery("#COPY_MESSAGE").fadeIn('1000');
+				jQuery("#COPY_MESSAGE").animate({top: 0}, 2000);
+				jQuery("#COPY_MESSAGE").fadeOut('2000');
+			} else {
+				alert("URL文字列のコピー機能はお使いのブラウザに対応しておりません");
+			}
+		})
+
+	  // 変更ボタン
+	  $(".TAB_EDIT").click(function(){
+		$(this).parents("form").submit();
+	  })
+
+	  #if( $!{RESET_CHECK_FLG} == 1)
+		  $('#RESET').trigger("click");
+	  #end
+
+	})
+
+	function checkReset(){
+		if ($('#RESET_AGREEMENT').is(':checked')) {
+			$("#RESET_BUTTON").attr("disabled", false);
+		} else {
+			$("#RESET_BUTTON").attr("disabled", true);
+		}
+	}
+
+	$('#resetModal').on('hidden.coreui.modal', function () {
+		$("#RESET_AGREEMENT").prop("checked", false);
+		$("#RESET_BUTTON").attr("disabled", true);
+	})
+	</script>
+
+  </body>
+</html>

@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<!--
+* CoreUI Pro based Bootstrap Admin Template
+* @version v3.2.0
+* @link https://coreui.io/pro/
+* Copyright (c) 2020 creativeLabs ?ukasz Holeczek
+* License (https://coreui.io/pro/license)
+-->
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="description" content="CoreUI - Open Source Bootstrap Admin Template">
+    <meta name="author" content="?ukasz Holeczek">
+    <meta name="keyword" content="Bootstrap,Admin,Template,Open,Source,jQuery,CSS,HTML,RWD,Dashboard">
+    <title>オートビズ管理画面</title>
+    <!-- Main styles for this application-->
+	#parse( "include/style.inc")
+  </head>
+
+  <body class="c-app">
+	#parse( "include/sidebar.inc")
+    <div class="c-wrapper">
+	#parse( "include/global_header.inc")
+      <div class="c-body">
+        <main class="c-main">
+          <div class="container-fluid">
+            <div class="fade-in">
+              <h1 class="h4 d-flex align-items-center mb-3">
+              	<button id="CANCEL2" class="btn-back"></button>
+              	#if( $!{EXEC_TYPE} == "DRAFT" )
+              	下書一斉配信メッセージ確認
+              	#else
+                一斉配信メッセージ確認
+                #end
+              </h1>
+
+              <form method="POST" id="EXEC_FORM" action="php2java.php?file=LIN0031K&if=3">
+              <div class="lineTalkLayout">
+                <div class="lineTalkLayout__main">
+                  <div class="commentSummary">
+                    <div class="commentSummary__main">
+
+										#if( $!{MESSAGE1} != "" || $!{SEND_IMAGE1} != "" )
+                      <div class="commentSummary__item">
+                        <div class="commentCard">
+                          <div class="commentCard__image trim-image">
+                            <img src="$!{PICTURE_URL}" alt="">
+                          </div>
+                          #if( $!{MESSAGE1} != "" )
+                          <div class="commentCard__message">
+														$UTIL.nl2br($UTIL.ht($!{MESSAGE1}))
+												  </div>
+                          #end
+                          #if( $!{SEND_IMAGE1} != "" )
+                          	<div><img src="$!{SEND_IMAGE1}" style="max-width:12em;max-height:12em;border-radius:0.5em;"></div>
+                          #end
+                          <!--
+                          <time class="commentCard__date" datetime="2022-12-31">
+                            12:30
+                          </time>
+                          -->
+                        </div>
+                      </div>
+                    #end
+
+	               		#if( $!{MESSAGE2} != "" || $!{SEND_IMAGE2} != "" )
+                      <div class="commentSummary__item">
+                        <div class="commentCard">
+                          <div class="commentCard__image trim-image">
+                            <img src="$!{PICTURE_URL}" alt="">
+                          </div>
+                          #if( $!{MESSAGE2} != "" )
+	                          <div class="commentCard__message">
+															$UTIL.nl2br($UTIL.ht($!{MESSAGE2}))
+													  </div>
+                          #end
+                          #if( $!{SEND_IMAGE2} != "" )
+                          	<div><img src="$!{SEND_IMAGE2}" style="max-width:12em;max-height:12em;border-radius:0.5em;"></div>
+                          #end
+                          <!--
+                          <time class="commentCard__date" datetime="2022-12-31">
+                            12:30
+                          </time>
+                          -->
+                        </div>
+                      </div>
+                    #end
+
+										#if( $!{MESSAGE3} != "" || $!{SEND_IMAGE3} != "" )
+                      <div class="commentSummary__item">
+                        <div class="commentCard">
+                          <div class="commentCard__image trim-image">
+                            <img src="$!{PICTURE_URL}" alt="">
+                          </div>
+                          #if( $!{MESSAGE3} != "" )
+                          <div class="commentCard__message">
+														$UTIL.nl2br($UTIL.ht($!{MESSAGE3}))
+												  </div>
+                          #end
+                          #if( $!{SEND_IMAGE3} != "" )
+                          	<div><img src="$!{SEND_IMAGE3}" style="max-width:12em;max-height:12em;border-radius:0.5em;"></div>
+                          #end
+
+                          <!--
+                          <time class="commentCard__date" datetime="2022-12-31">
+                            12:30
+                          </time>
+                          -->
+                        </div>
+                      </div>
+                    #end
+
+                    #if( $!{MESSAGE4} != "" || $!{SEND_IMAGE4} != "" )
+                      <div class="commentSummary__item">
+                        <div class="commentCard">
+                          <div class="commentCard__image trim-image">
+                            <img src="$!{PICTURE_URL}" alt="">
+                          </div>
+                          #if( $!{MESSAGE4} != "" )
+                          <div class="commentCard__message">
+														$UTIL.nl2br($UTIL.ht($!{MESSAGE4}))
+												  </div>
+                          #end
+                          #if( $!{SEND_IMAGE4} != "" )
+                          	<div><img src="$!{SEND_IMAGE4}" style="max-width:12em;max-height:12em;border-radius:0.5em;"></div>
+                          #end
+                          <!--
+                          <time class="commentCard__date" datetime="2022-12-31">
+                            12:30
+                          </time>
+                          -->
+                        </div>
+                      </div>
+                    #end
+
+                    #if( $!{MESSAGE5} != ""  || $!{SEND_IMAGE5} != "" )
+                      <div class="commentSummary__item">
+                        <div class="commentCard">
+                          <div class="commentCard__image trim-image">
+                            <img src="$!{PICTURE_URL}" alt="">
+                          </div>
+                          #if( $!{MESSAGE5} != "" )
+                          <div class="commentCard__message">
+														$UTIL.nl2br($UTIL.ht($!{MESSAGE5}))
+												  </div>
+                          #end
+                          #if( $!{SEND_IMAGE5} != "" )
+                          	<div><img src="$!{SEND_IMAGE5}" style="max-width:12em;max-height:12em;border-radius:0.5em;"></div>
+                          #end
+                          <!--
+                          <time class="commentCard__date" datetime="2022-12-31">
+                            12:30
+                          </time>
+                          -->
+                        </div>
+                      </div>
+                    #end
+
+                    </div>
+                    <div class="commentSummary__form">
+                     #if( !$!{EXEC_TYPE} == "DRAFT" )
+                      <div class="text-center mb-2">
+                        上記内容で配信しますのでご確認ください。
+                      </div>
+                     #end
+                      <div class="text-center">
+                        <button class="btn btn-secondary btn-lg mx-md-2 px-5 col-sm-12 col-md-auto" id="CANCEL">
+                          キャンセル
+                        </button>
+                        #if( $!{EXEC_TYPE} == "DRAFT" )
+                        <button type="submit" class="btn btn-primary btn-lg mx-md-2 px-5 mt-2 mt-md-0 col-sm-12 col-md-auto">
+                          下書保存
+                        </button>
+                        #else
+                        <button type="button" class="btn btn-primary btn-lg mx-md-2 px-5 mt-2 mt-md-0 col-sm-12 col-md-auto" id="MESSAGE_COMMIT">
+                          配信実行
+                        </button>
+                        #end
+                        <input type="hidden" name="DISPLAY_NAME" value="$!{DISPLAY_NAME}">
+                        <input type="hidden" name="CREATE_DATE_START" value="$!{CREATE_DATE_START}">
+                        <input type="hidden" name="CREATE_DATE_END" value="$!{CREATE_DATE_END}">
+                        <input type="hidden" name="MAIL_STATUS" value="$!{MAIL_STATUS}">
+                        <input type="hidden" name="TAG" value='$!{TAG}'>
+                        <input type="hidden" name="ADDRESS" value="$!{ADDRESS}">
+                        <input type="hidden" name="SEND_TYPE" value="$!{SEND_TYPE}">
+                        <input type="hidden" name="SEND_DATE" value="$!{SEND_DATE}">
+                        <input type="hidden" name="MESSAGE1" value="$UTIL.ht($!{MESSAGE1})">
+                        <input type="hidden" name="MESSAGE2" value="$UTIL.ht($!{MESSAGE2})">
+                        <input type="hidden" name="MESSAGE3" value="$UTIL.ht($!{MESSAGE3})">
+                        <input type="hidden" name="MESSAGE4" value="$UTIL.ht($!{MESSAGE4})">
+                        <input type="hidden" name="MESSAGE5" value="$UTIL.ht($!{MESSAGE5})">
+                        <input type="hidden" name="SEND_IMAGE1" value="$!{SEND_IMAGE1}">
+                        <input type="hidden" name="SEND_IMAGE2" value="$!{SEND_IMAGE2}">
+                        <input type="hidden" name="SEND_IMAGE3" value="$!{SEND_IMAGE3}">
+                        <input type="hidden" name="SEND_IMAGE4" value="$!{SEND_IMAGE4}">
+                        <input type="hidden" name="SEND_IMAGE5" value="$!{SEND_IMAGE5}">
+                        #if( $!{EXEC_TYPE} == "DRAFT" )
+                        <input type="hidden" name="EXEC_TYPE" id="EXEC_TYPE" value="DRAFT_ADD">
+                        #else
+                        <input type="hidden" name="EXEC_TYPE" id="EXEC_TYPE" value="ADD">
+                        #end
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="lineTalkLayout__sub">
+                  <p class="h5">配信条件</p>
+
+                  <div class="profileSubCard">
+                    <div class="profileSubCard__title">
+                      送信先の設定
+                    </div>
+                    <div class="profileSubCard__body">
+						#if( $!{ADDRESS} == 1 )
+							友だち全員に配信する
+						#elseif( $!{ADDRESS} == 2 )
+							友だちを絞り込んで配信する
+						#end
+                  	</div>
+                  </div>
+
+                  <div class="profileSubCard">
+                    <div class="profileSubCard__title">
+                      友だち表示名
+                    </div>
+                    <div class="profileSubCard__body">
+                      <ul class="tagList">
+                        <li class="tagList__item">
+                         $!{DISPLAY_NAME}
+                        </li>
+                      </ul>
+                    </div>
+                    <hr>
+                    <div class="profileSubCard__title">
+                      友だち登録日
+                    </div>
+                    <div class="profileSubCard__body">
+                      <p class="small">
+                      #if( $!{CREATE_DATE_START} != "" || $!{CREATE_DATE_END} != "" )
+                        $!{CREATE_DATE_START} ～ $!{CREATE_DATE_END}
+                      #end
+                      </p>
+                    </div>
+                    <hr>
+                    <div class="profileSubCard__title">
+                      メール連携状態
+                    </div>
+                    <div class="profileSubCard__body">
+                      <p class="small">
+                       #if( $!{MAIL_STATUS} == 1 )
+                       	全て
+                       #elseif( $!{MAIL_STATUS} == 2 )
+                       	未連携
+                       #elseif( $!{MAIL_STATUS} == 3 )
+                       	連携済み
+                       #end
+                      </p>
+                    </div>
+                    <hr>
+                    <div class="profileSubCard__title">
+                      タグ
+                    </div>
+                    <div class="profileSubCard__body">
+                      <ul class="tagList">
+                      #foreach( $!{tag} in $!{TAG_LIST})
+                        <li class="tagList__item">
+                          $!{tag}
+                        </li>
+                  	  #end
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div class="profileSubCard">
+                    <div class="profileSubCard__title">
+                      配信時刻
+                    </div>
+                    <div class="profileSubCard__body">
+                    #if( $!{SEND_TYPE} == 1 )
+						登録後すぐに配信
+                    #elseif( $!{SEND_TYPE} == 2 )
+                    	$!{SEND_DATE}
+                    #end
+                    </div>
+                  </div>
+                </div>
+              </div>
+              </form>
+
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+    <!-- CoreUI and necessary plugins-->
+	#parse( "include/js.inc")
+	<script type="text/javascript">
+	var obj = document.forms["EXEC_FORM"];
+
+	#if($!{WARNING} == 1)
+		if(window.confirm("無料メッセージ上限数を超えています。\r\n予約されている当月分のメッセージを正常に配信できない可能性があります。\r\n処理を進めますか？")){
+
+		}else{
+			$("#EXEC_FORM").attr("action","php2java.php?file=LIN0031&if=3");
+			$("#EXEC_TYPE").val("BACK");
+			obj.submit();
+		}
+	#end
+
+	// キャンセル
+	$("#CANCEL").on('click',function(){
+		$("#EXEC_FORM").attr("action","php2java.php?file=LIN0031&if=3");
+		$("#EXEC_TYPE").val("BACK");
+		obj.submit();
+	});
+
+	// キャンセル
+	$("#CANCEL2").on('click',function(){
+		$("#EXEC_FORM").attr("action","php2java.php?file=LIN0031&if=3");
+		$("#EXEC_TYPE").val("BACK");
+		obj.submit();
+	});
+
+	$("#MESSAGE_COMMIT").on('click',function(){
+		this.disabled = true;
+		this.form.submit();
+	});
+	</script>
+  </body>
+</html>

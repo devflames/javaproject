@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<!--
+* CoreUI Pro based Bootstrap Admin Template
+* @version v3.2.0
+* @link https://coreui.io/pro/
+* Copyright (c) 2020 creativeLabs ?ukasz Holeczek
+* License (https://coreui.io/pro/license)
+-->
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="description" content="CoreUI - Open Source Bootstrap Admin Template">
+    <meta name="author" content="?ukasz Holeczek">
+    <meta name="keyword" content="Bootstrap,Admin,Template,Open,Source,jQuery,CSS,HTML,RWD,Dashboard">
+    <title>オートビズ管理画面</title>
+    <!-- Main styles for this application-->
+	#parse( "include/style.inc")
+  </head>
+
+  <body class="c-app">
+	#parse( "include/sidebar.inc")
+    <div class="c-wrapper">
+	#parse( "include/global_header.inc")
+      <div class="c-body">
+        <main class="c-main pb-4">
+          <div class="container-fluid">
+            <div class="fade-in">
+              <h1 class="h4 d-flex align-items-center mb-3">
+                <a href="php2java.php?file=LIN0021&if=3"><button class="btn-back"></button></a>
+                個別トーク
+              </h1>
+              <div class="lineTalkLayout">
+                <div class="lineTalkLayout__sub">
+                  <div class="profileBox">
+                    <div class="profileBox__image trim-image">
+                      <img src="$!{FRIEND.profile_image}" alt="">
+                    </div>
+                    <div class="profileBox__name">
+                      $!{FRIEND.display_name}
+                    </div>
+                    <div class="profileBox__button">
+                     #if( $!{FRIEND.state} == 2 )
+                      <button class="btn btn-secondary" type="button" onclick="stateChange(0,$!{FRIEND.friend_id})">
+                       ブロック解除
+                      </button>
+                     #else
+                      <button class="btn btn-secondary" type="button" onclick="stateChange(2,$!{FRIEND.friend_id})">
+                        ブロック
+                      </button>
+                     #end
+                    </div>
+                  </div>
+                  <div class="profileSubCard">
+                    <div class="profileSubCard__title">
+                      ステータス
+                    </div>
+                    <div class="profileSubCard__body">
+                      <select class="form-control">
+                        <option>未対応</option>
+                        <option>対応済</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="profileSubCard">
+                    <div class="profileSubCard__title">
+                      タグ
+                      <button class="btn btn-sm btn-secondary" type="button" data-toggle="modal" data-target="#tagEditModal">
+                        編集
+                      </button>
+                    </div>
+                    <div class="profileSubCard__body">
+                      <ul class="tagList">
+                       #foreach( $!{tag} in $!{TAG_LIST})
+                        <li class="tagList__item">
+                          $!{tag.tag_name}
+                        </li>
+                      #end
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+    <div class="modal fade" id="tagEditModal" tabindex="-1" role="dialog" aria-labelledby="tagEditModal" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">タグ編集</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+
+            <div class="accordion" id="accordion" role="tablist">
+
+			#foreach( $!{folder} in $!{FOLDER_LIST})
+
+			  #if( $!{folder.folder_id} != $former_id)
+              <div class="card mb-0">
+                <div class="card-header bg-light d-flex align-items-center" role="tab" data-id="$!{folder.folder_id}" data-friend="$!{FRIEND_ID}">
+                      <a data-toggle="collapse" href="#collapse$velocityCount" role="button" aria-expanded="false" aria-controls="collapse$velocityCount">
+                        $!{folder.folder_name}
+                      </a>
+                </div>
+
+                <div class="collapse" id="collapse$velocityCount" role="tabpanel" data-parent="#accordion">
+                  <div class="card-body">
+                    <div class="mb-2">
+                      <button class="btn btn-sm btn-primary addTagButton" data-id="$!{folder.folder_id}">
+                        ＋ 新しいタグ
+                      </button>
+                    </div>
+
+                    <div class="table-scroll-sm">
+                      <table class="table table-hover table-bordered mb-0" id="tagTable$!{folder.folder_id}">
+                        <thead class="thead-light">
+                          <tr>
+                            <th style="width:50px;"></th>
+                            <th>タグ名</th>
+                          </tr>
+                        </thead>
+
+                        <tbody id="TAG_LIST$!{folder.folder_id}">
+                        #foreach( $!{tag} in $!{FOLDER_LIST})
+	                        #if( ${tag.containTag($!{TAG_ARR},$!{tag.tag_id})} )
+								#set( $checked = "checked" )
+							#else
+								#set( $checked = "" )
+							#end
+                          <tr class="TAG_$!{tag.folder_id}">
+                            <td>
+								<input type="checkbox" name="TAG" value="$!{tag.tag_id}" data-parent="$!{tag.folder_id}" $checked>
+                            </td>
+                            <td>
+                              $!{tag.tag_name}
+                            </td>
+                          </tr>
+                        #end
+                        </tbody>
+
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              #end
+              #set( $former_id = $!{folder.folder_id})
+			#end
+
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">キャンセル</button>
+            <button type="button" class="btn btn-primary" id="TAG_SET" data-friend="$!{FRIEND_ID}">保存</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CoreUI and necessary plugins-->
+	#parse( "include/js.inc")
+ 	<script type="text/javascript">
+	$(document).ready(function(){
+
+		// フォルダ選択
+		$(".card-header").on("click",function(){
+
+			var folder_id = $(this).data("id");
+			var friend_id = $(this).data("friend");
+
+			$("#TAG_LIST"+folder_id+" tr").hide();
+			$(".TAG_"+folder_id).show();
+
+		});
+
+		$("#TAG_SET").on('click',function(){
+
+	        //選択されたチェックボックスの値を配列に保存
+	        var checks=[];
+	        var parents=[];
+	        $("input[name='TAG']:checked").each(function(){
+	            checks.push(this.value);
+	            parents.push($(this).data("parent"));
+	        });
+
+	        // 重複削除
+	        checks = Array.from(new Set(checks));
+	        parents = Array.from(new Set(parents));
+
+	        var friend_id = $(this).data("friend");
+
+	        jQuery.ajax({
+	            type: "POST",
+	            url: "php2java.php?file=LIN0023&if=3",
+	            data: {
+	                "TAG":checks,
+	                "PARENT":parents,
+	                "FRIEND_ID":friend_id,
+	                "EXEC_TYPE":"EDIT"
+	            },
+	            success: function(data){
+	                if(data != '') {
+	                    $("#tagEditModal").modal('hide');
+	                    //$(".talkSummaryCard" + ".is-active").trigger("click",{exec_type:""},loadProfile);
+	                    window.location.href = "php2java.php?file=LIN0023&if=3&FRIEND_ID="+friend_id;
+
+	                }
+	            }
+	        });
+		});
+
+		//新規タグ追加処理
+		$('.addTagButton').on('click', function () {
+
+		  var folder_id = $(this).data("id");
+
+		  var addTagItem = `
+		                  <tr>
+					        <td>
+					        	<input type="checkbox" name="TAG" value="" data-parent="" id="NEW_CHECKBOX" style="display:none;">
+					        </td>
+		                    <td>
+		                      <div class="editLabelSwitcher mode-edit">
+		                        <div class="editLabelSwitcher__label">
+		                          新しいタグ
+		                        </div>
+		                        <div class="editLabelSwitcher__form">
+		                          <div class="input-group input-group-sm">
+		                            <input type="text" class="form-control" name="NEW_TAG" id="NEW_TAG" value="" placeholder="新しいタグ名">
+		                            <div class="input-group-append">
+		                              <button class="btn btn-secondary" id="TAG_ADD">決定</button>
+		                            </div>
+		                          </div>
+		                        </div>
+
+		                      </div>
+		                    </td>
+
+		                  </tr>`;
+		  $("#tagTable"+folder_id+" tbody").prepend(addTagItem).find('input').focus();
+		  $("#tagTable"+folder_id+" tbody tr").not(':first').find('.mode-edit').removeClass('mode-edit');
+		  EditLabelSwitcher(folder_id);
+		});
+
+
+	});
+
+	var EditLabelSwitcher = function (folder_id) {
+
+		  if ($('.editLabelSwitcher').length > 0) {
+
+		    var target = $('.editLabelSwitcher');
+		    target.each(function (index, element) {
+		      var label = $(this).find('.editLabelSwitcher__label');
+		      var form = $(this).find('.editLabelSwitcher__form');
+		      var button = $(this).find('.editLabelSwitcher__form button');
+		      var checkbox = $("#NEW_CHECKBOX");
+
+		      button.on('click', function () {
+
+		    	var tag_name = $("#NEW_TAG").val();
+		    	$("#NEW_CHECKBOX").data("parent",folder_id)
+				jQuery.ajax({
+				    type: "POST",
+				    url: "php2java.php?file=LIN0023&if=3",
+				    data: {
+				        "FOLDER_ID":folder_id,
+				        "TAG_NAME":tag_name,
+				        "EXEC_TYPE":"ADD",
+				    },
+				    success: function(data){
+				        if(data != '') {
+					      //e.stopPropagation();
+					      //e.preventDefault();
+
+					      label.text(tag_name);
+					      label.show();
+					      form.hide();
+					      $("#NEW_CHECKBOX").val(data);
+					      checkbox.show();
+				        }
+				    }
+				});
+
+		      })
+		    })
+		  }
+		}
+	</script>
+
+  </body>
+</html>

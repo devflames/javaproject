@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<!--
+* CoreUI Pro based Bootstrap Admin Template
+* @version v3.2.0
+* @link https://coreui.io/pro/
+* Copyright (c) 2020 creativeLabs ?ukasz Holeczek
+* License (https://coreui.io/pro/license)
+-->
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="description" content="CoreUI - Open Source Bootstrap Admin Template">
+    <meta name="author" content="?ukasz Holeczek">
+    <meta name="keyword" content="Bootstrap,Admin,Template,Open,Source,jQuery,CSS,HTML,RWD,Dashboard">
+    <title>オートビズ管理画面</title>
+    <!-- Main styles for this application-->
+	#parse( "include/style.inc")
+  </head>
+
+  <body class="c-app">
+	#parse( "include/sidebar.inc")
+
+    <div class="c-wrapper">
+	#parse( "include/global_header.inc")
+      <div class="c-body">
+        <main class="c-main pb-4">
+          <div class="container-fluid">
+            <div class="fade-in">
+              <h1 class="h4 d-flex align-items-center mb-3">
+                <a href="php2java.php?file=LIN0021&if=3"><button class="btn-back"></button></a>
+                個別トーク
+              </h1>
+              <div class="lineTalkLayout">
+                <div class="lineTalkLayout__main">
+                  <div class="commentSummary">
+                    <div class="commentSummary__main" id="CHAT_LIST">
+
+					$!{HTML}
+
+                    </div>
+                    <div class="commentSummary__reload">
+                      <button class="btn btn-sm btn-pill btn-light btn-block" id="RELOAD" data-friend="$!{FRIEND_ID}" data-line="$!{LINE_ID}">
+                        <span class="cil-sync btn-icon mr-2"></span>最新に更新
+                      </button>
+                    </div>
+                    <div class="commentSummary__form line-form">
+                      <div class="commentForm">
+                        <div class="commentForm__textarea">
+                          <textarea class="form-control line-message auto-height" rows="4"  name="MESSAGE" id="MESSAGE1" oninput="textCount(1)" placeholder="メッセージを入力"></textarea>
+                        </div>
+                        <div class="commentForm__button">
+                          <button class="btn btn-sm btn-light" data-toggle="modal" data-target="#inputModal" onclick="copyMessage('MESSAGE1','MESSAGE2')">
+                            <i class="cil-fullscreen m-0"></i>
+                          </button>
+                          <button class="btn btn-sm btn-primary" type="button" id="SEND1" data-friend="$!{FRIEND_ID}" data-line="$!{LINE_ID}">
+                            送信
+                          </button>
+                        </div>
+                      </div>
+                      <div style="display: flex; justify-content: space-between; font-size:0.625rem; margin-top:5px; margin-bottom:-5px">
+						            <span class="count-error" style="color:red;font:bold 6pt"></span>
+						            <span style="margin-left: auto"><span class="text-count">0</span>/$!{TEXT_MAX_COUNT}</span>
+				              </div>
+                      <div class="commentTools">
+                        <div class="commentTools__group">
+                          <button class="iconButton" data-toggle="modal" data-target="#imageModal">
+                            <i class="cil-image"></i>
+                          </button>
+                          <!--
+                          <button class="iconButton">
+                            <i class="cil-notes"></i>
+                          </button>
+                          -->
+                          <button class="iconButton emoji-button" onclick="emojiCount(1)">
+                            <i class="cil-smile"></i>
+                          </button>
+                          <div class="emoji-picker">
+                            <emoji-picker id="EMOJI_PICKER1"></emoji-picker>
+                          </div>
+                        </div>
+                        <div class="commentTools__group">
+                          <button class="toolSubButton" onclick="setItem('displayname')">
+                            友だち表示名
+                          </button>
+						  #if( $!{SCENARIO.size()} > 0 )
+                          <select data-placeholder="連携URL" class="chosen" id="CONNECT_URL">
+                          	<option></option>
+                           #foreach( $!{scenario} in $!{SCENARIO})
+                           	<option value="https://$!{SERVER_PLEFIX}auto.biz/$!{ACCOUNT}/registp/$!{scenario.fname}.htm?fid=[[lineid]]">$!{scenario.scenario}</option>
+                           #end
+                          </select>
+                          #end
+                          <!--
+                          <button class="toolSubButton" onclick="setItem('lineid')">
+                            連携ID
+                          </button>
+                          -->
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+    <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModal" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">画像送信</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body bg-light">
+          <span id="PROGRESS"></span>
+            <div class="nav-tabs-boxed">
+              <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item">
+                  <a class="nav-link active" data-toggle="tab" href="#new" role="tab" aria-controls="new" id="newFileTab">
+                    新規アップロード
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" data-toggle="tab" href="#uploaded" role="tab" aria-controls="uploaded" id="uploadedFileTab">
+                    アップロード済み
+                  </a>
+                </li>
+              </ul>
+              <div class="tab-content">
+                <div class="tab-pane active" id="new" role="tabpanel">
+                <form id="FILE_UPLOAD_FORM" method="post" enctype="multipart/form-data" action="line_upload.php">
+                  <div class="imageUploader">
+                    <div class="imageUploader__icon">
+                      <i class="cil-camera"></i>
+                    </div>
+                    <div class="imageUploader__text">
+                      クリックして画像を選択してください。
+                    </div>
+                    <div class="imageUploader__text"><small>※8MBまでのファイルをアップロードできます</small></div>
+                    <div class="imageUploader__text"><small>※GIF,JPEG,PNG形式の画像のみ対応</small></div>
+                    <div class="imageUploader__text"><small>※アニメーションGIFはご利用できません</small></div>
+                    <div class="imageUploader__text"><small>※アップロード時に自動的に圧縮されます</small></div>
+                    <input type="file" name="upload" accept="image/png,image/jpeg,image/gif" id="uploadFile">
+                    <span id="UPLOAD_ERR" style="font-weight:600;color:red;"></span>
+                  </div>
+
+                  	<div class="op_container">
+	                    <div class="op_inner">
+						    <div class="op_text">0%</div>
+						    <div class="op_ber"></div>
+					    </div>
+			  		</div>
+			  		<div class="row">
+					<div class="col-4 col-md-3 mb-3">
+						<span id="previewArea"></span>
+					</div>
+					</div>
+				</form>
+                </div>
+                <div class="tab-pane" id="uploaded" role="tabpanel">
+                  <div class="row" style="height:400px;overflow-y:scroll;overflow-x:hidden;" id="uploadedFile">
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">キャンセル</button>
+            <button type="button" class="btn btn-primary" id="FILE_SELECT" data-friend="$!{FRIEND_ID}" data-line="$!{LINE_ID}">決定</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="inputModal" tabindex="-1" role="dialog" aria-labelledby="inputModal" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">メッセージ送信</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close" data-friend="$!{FRIEND_ID}" data-line="$!{LINE_ID}">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="line-form">
+              <div class="commentForm">
+                <div class="commentForm__textarea">
+                  <textarea class="form-control line-message auto-height" rows="10" name="MESSAGE" id="MESSAGE2" oninput="textCount(2)" placeholder="メッセージを入力"></textarea>
+                </div>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size:0.625rem; margin-top:5px; margin-bottom:-5px">
+		            <span class="count-error" style="color:red;font:bold 6pt"></span>
+		            <span style="margin-left: auto"><span class="text-count">0</span>/$!{TEXT_MAX_COUNT}</span>
+              </div>
+              <div class="commentTools">
+                <div class="commentTools__group">
+                  <button class="iconButton emoji-button" onclick="emojiCount(2)">
+                    <i class="cil-smile"></i>
+                  </button>
+                  <div class="emoji-picker">
+                    <emoji-picker id="EMOJI_PICKER2"></emoji-picker>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" id="CANCEL" onclick="copyMessage('MESSAGE2','MESSAGE1')">キャンセル</button>
+            <button type="button" class="btn btn-primary" id="SEND2">送信</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- CoreUI and necessary plugins-->
+	#parse( "include/js.inc")
+	<script type="text/javascript">
+	$(document).ready(function(){
+
+		// LINE連携用プルダウン
+		$(".chosen").chosen({
+			width:"150px",
+		    search_contains: true  ,
+		    no_results_text:"一致するシナリオはありません"
+		})
+
+
+		$("#SEND1").on("click",{exec_type:"ADD",msg_type:"TEXT","modal":0},loadHistory);
+		$("#SEND2").on("click",{exec_type:"ADD",msg_type:"TEXT","modal":1},loadHistory);
+		$("#FILE_SELECT").on("click",{exec_type:"ADD",msg_type:"IMAGE","modal":2},loadHistory);
+		$("#CONTINUE").on("click",{exec_type:"RELOAD",limit:$!{CONTINUE}},loadHistory);
+		$("#RELOAD").on("click",{exec_type:"RELOAD"},loadHistory);
+
+		$("#newFileTab").on("click",initNewTab);
+
+		// アップロード済み画像の表示
+		$("#uploadedFileTab").on("click",loadImage);
+
+		var fileInput = document.getElementById('uploadFile');
+
+		// input[type=file]に変更があれば実行
+		fileInput.addEventListener('change',function(e){
+
+			var files = e.target.files;
+
+			if( typeof files[0] !== 'undefined'){
+				fileUpload(files);
+			}
+		});
+
+		// 初回に読み込んでおく
+		loadImage();
+
+		// シナリオ連携
+	    $("#CONNECT_URL").change(function(){
+
+	    	var elm = document.getElementById("MESSAGE1");
+	    	var val = $("#CONNECT_URL").val();
+
+			if (window.navigator.appName.indexOf('Microsoft') != -1) { // IE
+				elm.focus();
+				var selection = document.selection.createRange();
+				selection.text = val;
+			} else {
+				var before = elm.value.substring(0, elm.selectionStart);
+				var after = elm.value.substring(elm.selectionEnd, elm.value.length);
+				elm.value = before + val + after;
+//				elm.scrollTop = top;
+				elm.setSelectionRange((before + val).length, (before + val).length);
+				elm.focus();
+			}
+			textCount(1);
+	    });
+
+	});
+
+	// 新規アップロードタブの初期化
+	function initNewTab(){
+
+        // タブの切り替え
+		$("#newFileTab").addClass("active");
+		$("#uploadedFileTab").removeClass("active");
+		$("#new").show();
+		$("#uploaded").hide();
+		$("#previewArea").empty();
+		$("#UPLOAD_ERR").text("");
+		$("#FILE_SELECT").hide();
+	}
+
+	//アップロード予定のファイル名の拡張子が許可されているか確認する関数
+	function checkExt(filename){
+
+		var allow_exts = new Array('jpg', 'jpeg', 'png','jpeg','gif');
+
+		//比較のため小文字にする
+		var ext = getExt(filename).toLowerCase();
+
+		//許可する拡張子の一覧(allow_exts)から対象の拡張子があるか確認する
+		if (allow_exts.indexOf(ext) === -1) return false;
+		return true;
+	}
+
+	//ファイル名から拡張子を取得する関数
+	function getExt(filename){
+
+		var pos = filename.lastIndexOf('.');
+		if (pos === -1) return '';
+		return filename.slice(pos + 1);
+	}
+
+	// 画像の表示
+	function loadImage(){
+
+        // タブの切り替え
+		$("#newFileTab").removeClass("active");
+		$("#uploadedFileTab").addClass("active");
+		$("#new").hide();
+		$("#uploaded").show();
+		$("#FILE_SELECT").show();
+
+		jQuery.ajax({
+			url:"line_choice.php",
+			cache: false,
+
+			// 通信成功
+			success:function(result,textStatus,xhr){
+
+				var data_arr = JSON.parse(result);
+
+				// エラーの場合
+				if( data_arr[2] != "" ){
+					jQuery("#uploadedFile").html(data_arr[2]);
+					return false;
+				}
+
+				jQuery("#uploadedFile").html(data_arr[0]);
+				jQuery("#PROGRESS").html(data_arr[1]);
+			},
+
+			// 通信失敗
+			error:function(xhr,textStatus,error){
+
+			}
+		});
+	}
+
+	// ファイルアップロード
+	function fileUpload(f){
+    	var formData = new FormData();
+        for (var i=0; i<f.length; i++) {
+            formData.append("upload",f[i]);
+        }
+
+        if( checkExt(f[0].name) == false ){
+        	alert("拡張子を確認して下さい");
+        	return false;
+        }
+
+        //ファイルが正常に受け取れた際の処理
+		jQuery.ajax({
+			async: true,
+			type:'POST',
+			contentType: false,		// contentTypeもfalseに指定
+			processData:false,		// ajaxがdataを整形しない
+			url: './line_upload.php',
+			data:formData,
+
+			// 通信成功
+			success:function(result,textStatus,xhr){
+				if( result != "" ){
+					var data_arr = JSON.parse(result);
+
+					// エラーの場合
+					if( data_arr[2] != "" ){
+						jQuery("#UPLOAD_ERR").html(data_arr[2]);
+						return false;
+					}
+				}
+
+				imagesProgress();
+				photoPreview('onChenge',f[0]);
+			},
+
+			// 通信失敗
+			error:function(xhr,textStatus,error){
+
+			}
+
+		});
+	}
+
+	// イメージ画像のプレビュー
+	function photoPreview(event,f=null){
+		var file = f;
+		if( file == null ){
+			file == event.target.files[0];
+		}
+
+		var reader = new FileReader();
+		var preview = document.getElementById("previewArea");
+		var previewImage = document.getElementById("previewImage");
+
+		if( previewImage != null ){
+			preview.removeChild(previewImage);
+		}
+
+		reader.onload = function(event){
+			var img = document.createElement("img");
+			img.setAttribute("src",reader.result);
+			img.setAttribute("id","previewImage");
+			img.setAttribute("class","img-thumbnail img-fluid");
+			preview.appendChild(img);
+		};
+		reader.readAsDataURL(file);
+	}
+
+	// 画像の読み込み状況をプログレス表示
+    function imagesProgress(){
+
+		jQuery(".op_text").css("visibility","visible");
+
+		var preview = document.querySelector("#previewArea");
+
+        // imagesLoadedライブラリでbody要素内の画像の読み込み状況を監視
+        var imgLoad = imagesLoaded('body');
+
+        // body要素内の画像の総数を変数へ格納
+        var imgTotal = imgLoad.images.length;
+
+        // 読み込みが完了した画像の枚数を格納する変数
+        var imgLoaded = 0;
+
+        // .op_berのwidthの値を格納する変数
+        var current = 0;
+
+        // 1秒に60回のペースで画像の読み込み状況をチェック
+        progressTimer = setInterval(updateProgress, 1000 / 60);
+
+        // imagesLoadedライブラリを利用し、画像が読み込まれるごとにimgLoadedを加算
+        imgLoad.on('progress', function () {
+            imgLoaded++;
+        });
+
+        // 画像の読み込み状況をもとに
+        // .op_textのテキストの値と
+        // .op_berのwidthの値を変更します
+        // このupdateProgress関数は上に書いたsetInterval()により1秒に60回のペースで呼び出されます
+        function updateProgress(){
+
+            // 画像が何％読み込まれたか
+            var target = (imgLoaded / imgTotal) * 100;
+
+            // currentとtargetをもとにイージングをかける
+            // 100に近づくにつれ遅くなる
+            current += (target - current) * 0.1;
+
+            // .op_textのテキストを反映
+            // Math.floor()関数で小数点以下を切り捨て
+            $('.op_text').text(Math.floor(current) + '%');
+
+            // .op_berのwidthを反映
+            $('.op_ber').css({width: current + '%'});
+
+            // アニメーション終了処理
+            if(current >= 100){
+
+                // clearInterval()で上に書いたsetInterval()を解除する
+                clearInterval(progressTimer);
+
+                // ここに画像が読み込み終わった後の処理を書く
+                setTimeout(function(){
+                    $('.op_container').fadeOut();
+                }, 1000);
+
+            }
+
+            // currentが99.9よりも大きければ100としてアニメーション終了処理へ
+            if(current > 99.9){
+                current = 100;
+            }
+        }
+    }
+
+    const sleep = ms => new Promise(res => setTimeout(res, ms))
+
+    async function wait() {
+    	  await sleep(6000)
+    	  console.log('開始から6秒経過')
+    	  $("#RELOAD").trigger("click");
+    }
+
+	// チャット履歴取得
+	function loadHistory(event){
+
+		var friend_id = $(this).data("friend");
+		var line_id = $(this).data("line");
+		if( friend_id == "" && line_id ){
+			return false;
+		}
+
+		$("button").data("friend",friend_id);
+		$("button").data("line",line_id);
+
+		var postData;
+		if( event.data.exec_type == "ADD" ){
+
+				// メッセージタイプ
+				var type = event.data.msg_type;
+
+				var msg = "";
+
+				// 通常ボックス
+				if( event.data.modal == 0 ){
+					msg = $("#MESSAGE1").val();
+
+					// 文字数チェック
+					var text_count = msg.length;
+					var errorTexst = document.getElementsByClassName('count-error');
+
+					if($!{TEXT_MAX_COUNT} < text_count){
+						for (i = 0; i < errorTexst.length; i++) {
+							errorTexst[i].innerText = "文字数の上限を超えています";
+						}
+						$("#overlay").hide();
+						return
+
+					} else {
+						for (i = 0; i < errorTexst.length; i++) {
+							errorTexst[i].innerText = "";
+						}
+					}
+
+				// modalテキストボックス
+				} else if( event.data.modal == 1 ) {
+					msg = $("#MESSAGE2").val();
+
+					// 文字数チェック
+					var text_count = msg.length;
+					var errorTexst = document.getElementsByClassName('count-error');
+
+					if($!{TEXT_MAX_COUNT} < text_count){
+						for (i = 0; i < errorTexst.length; i++) {
+							errorTexst[i].innerText = "文字数の上限を超えています";
+						}
+						$("#overlay").hide();
+						return
+
+					} else {
+						for (i = 0; i < errorTexst.length; i++) {
+							errorTexst[i].innerText = "";
+						}
+					}
+
+				// modal 画像送信
+				} else if( event.data.modal == 2 ) {
+
+					msg = $("input:radio[name='originalImg']:checked").val();
+					$("#imageModal").modal('hide');
+				}
+
+				postData = {
+					"FRIEND_ID":friend_id,
+					"LINE_ID":line_id,
+					"EXEC_TYPE":"ADD",
+					"POST_TYPE":type,
+					"TYPE":"SP",
+					"MESSAGE":msg
+					};
+
+		} else {
+
+			var limit_count = 0;
+			if( typeof event.data.limit !== 'undefined' ){
+				limit_count = event.data.limit;
+			}
+
+			postData = {
+					"FRIEND_ID":friend_id,
+					"LINE_ID":line_id,
+					"LIMIT":limit_count,
+					"TYPE":"SP"
+					};
+		}
+
+		jQuery.ajax({
+			type:"POST",
+			data:postData,
+			cache: false,
+			url: "php2java.php?file=LIN0022&if=3",
+		}).done(function(data){
+
+			$("#CHAT_LIST").html(data);
+			$("textarea[name='MESSAGE']").val("");
+
+			// 文字数カウント初期化
+			textCount(1);
+			// エラーメッセージが表示されている場合は消す
+			var errorTexst = document.getElementsByClassName('count-error');
+			for (i = 0; i < errorTexst.length; i++) {
+				errorTexst[i].innerText = "";
+			}
+
+			if(event.data.modal == 1 ){
+				$("#CANCEL").trigger("click");
+			}
+			if( typeof event.data.limit === 'undefined' ){
+				scrollToButtom();
+			}
+			if(event.data.exec_type=="ADD"){
+
+				// 送信されるまで一定時間まつ
+				wait();
+			}
+		});
+	}
+
+	// スクロールを一番下にする
+	function scrollToButtom() {
+		var chat_list = $("#CHAT_LIST");
+		chat_list.scrollTop(chat_list[0].scrollHeight - chat_list.height());
+	}
+
+	// 差し込み項目
+	function setItem(item){
+		var elm = document.getElementById("MESSAGE1");
+		var str = "[[" + item + "]]";
+
+		if (window.navigator.appName.indexOf('Microsoft') != -1) { // IE
+			elm.focus();
+			var selection = document.selection.createRange();
+			selection.text = str;
+		} else {
+			var before = elm.value.substring(0, elm.selectionStart);
+			var after = elm.value.substring(elm.selectionEnd, elm.value.length);
+			elm.value = before + str + after;
+//			elm.scrollTop = top;
+			elm.setSelectionRange((before + str).length, (before + str).length);
+			elm.focus();
+		}
+		textCount(1);
+	}
+
+	// メッセージのコピー
+	function copyMessage(origin,to){
+		var origin_val = jQuery("#"+origin).val();
+		jQuery("#"+to).val(origin_val);
+	}
+
+	// 文字数カウント
+	function textCount(number, emojiLength) {
+		var message = document.getElementById('MESSAGE' + number );
+		var send_text = message.value;
+		var text_count = send_text.length;
+		var target = document.getElementsByClassName('text-count');
+		var errorTexst = document.getElementsByClassName('count-error');
+
+		// 引数にemojiLengthがあればプラス
+		if(emojiLength != null) {
+			text_count = text_count + emojiLength;
+		}
+
+		if($!{TEXT_MAX_COUNT} < text_count){
+			for (i = 0; i < target.length; i++) {
+				target[i].style.color = 'red';
+				target[i].style.fontWeight = 'bold';
+				errorTexst[i].innerText = "文字数の上限を超えています";
+			}
+
+		} else {
+			for (i = 0; i < target.length; i++) {
+				target[i].style.color = '';
+				target[i].style.fontWeight = '';
+				errorTexst[i].innerText = "";
+			}
+		}
+
+		for (i = 0; i < target.length; i++) {
+			target[i].innerText = text_count;
+		}
+
+	}
+
+	// 絵文字カウント
+	function emojiCount(number) {
+
+		// 絵文字要素を取得
+  	var emojiPicker = document.getElementById("EMOJI_PICKER" + number)
+	  var emojiList = emojiPicker.shadowRoot.querySelectorAll('.emoji');
+
+		// クリックした絵文字の文字数を追加
+	  emojiList.forEach(function(emoji) {
+		  emoji.addEventListener('click', function() {
+			  var selectedEmoji = this.innerHTML;
+			  var emojiLength = selectedEmoji.length;
+			  textCount(number, emojiLength);
+		  });
+	  });
+
+	}
+	</script>
+
+  </body>
+</html>

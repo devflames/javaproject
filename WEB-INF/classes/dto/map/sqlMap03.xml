@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+
+	<!-- 管理情報取得 -->
+	<select id="getAccountInfo03" resultClass="dto.Entity.AccountInfo03">
+		SELECT
+			TBL.acount,
+			TBL.schema,
+			TBL.name,
+			TBL.asp_type,
+			TBL.server_id,
+			TBL.server_ip,
+			TBL.server_domain,
+			TBL.send_limit,
+			TBL.send_limit_month,
+			TBL.mail_max_count,
+			TBL.using_service,
+			TBL.cutoff_date
+		FROM
+			rmh_master.acount_info TBL
+		WHERE
+			TBL.acount = #ACCOUNT#
+	</select>
+
+</sqlMap>

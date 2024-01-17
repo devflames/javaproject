@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+
+	<!-- テーブル生成 -->
+	<insert id="createLineFriendTable">
+		CREATE TABLE
+			$SCHEMA$.line_friend
+		LIKE
+			line_admin.tpl_line_friend
+	</insert>
+
+	<!-- 汎用クエリー実行 -->
+	<select id="getFriendCnt" resultClass="Integer">
+		$QUERY_STR$
+	</select>
+
+	<select id="getLineListCnt" resultClass="Integer">
+		$QUERY_STR$
+	</select>
+
+	<!-- LINE友だち情報の取得 -->
+	<select id="getLineFriendProfile" resultClass="dto.Entity.LineFriend">
+		SELECT
+			friend_id,
+			email,
+			line_id,
+			profile_image,
+			display_name,
+			status_message,
+			state,
+			support
+		FROM
+			$SCHEMA$.line_friend
+		WHERE
+			line_account_id = #LINE_ACCOUNT_ID# AND
+			friend_id = #FRIEND_ID#
+	</select>
+
+	<!-- LINE友だち情報　更新 -->
+	<update id="updLineFriendState">
+		UPDATE
+			$SCHEMA$.line_friend
+		SET
+			state = #STATE#
+		WHERE
+			line_account_id = #LINE_ACCOUNT_ID# AND
+			friend_id = #FRIEND_ID#
+	</update>
+
+	<update id="updLineFriendSupport">
+		UPDATE
+			$SCHEMA$.line_friend
+		SET
+			support = #SUPPORT#
+		WHERE
+			line_account_id = #LINE_ACCOUNT_ID# AND
+			friend_id = #FRIEND_ID#
+	</update>
+
+	<select id="getLineFriendList" resultClass="dto.Entity.LineFriend">
+		SELECT
+			T1.friend_id,
+			T1.line_account_id,
+			T1.email,
+			T1.line_id,
+			T1.profile_image,
+			T1.display_name,
+			T1.status_message,
+			T1.state,
+			T1.support,
+			T1.block_date,
+			T1.create_date,
+			T1.update_date
+		FROM
+			$SCHEMA$.line_friend T1
+		WHERE
+		<isNotEmpty property="FRIEND_ID_LIST" close="AND">
+			T1.friend_id in ($FRIEND_ID_LIST$)
+		</isNotEmpty>
+		<isEqual property="FRIEND_ID_LIST" compareValue="NULL" close="AND">
+			T1.friend_id is NULL
+		</isEqual>
+		<isNotEmpty property="DISPLAY_NAME" close="AND">
+			T1.display_name LIKE ('%$DISPLAY_NAME$%')
+		</isNotEmpty>
+		<isNotEmpty property="CREATE_DATE_START" close="AND">
+			T1.create_date &gt;= #CREATE_DATE_START#
+		</isNotEmpty>
+		<isNotEmpty property="CREATE_DATE_END" close="AND">
+			T1.create_date &lt;= #CREATE_DATE_END#
+		</isNotEmpty>
+		<isEqual property="STATE" compareValue="0" close="AND">
+			T1.state = 0
+		</isEqual>
+		<isEqual property="STATE" compareValue="2" close="AND">
+			T1.state = 2
+		</isEqual>
+		<isEqual property="STATE" compareValue="3" close="AND">
+			T1.state = 3
+		</isEqual>
+		<isEqual property="STATE" compareValue="99" close="AND">
+			T1.state in (0,2)
+		</isEqual>
+		<isEqual property="MAIL_STATUS" compareValue="2" close="AND">
+			T1.email = ""
+		</isEqual>
+		<isEqual property="MAIL_STATUS" compareValue="3" close="AND">
+			T1.email != ""
+		</isEqual>
+			T1.line_account_id = #LINE_ACCOUNT_ID#
+		ORDER BY
+			<isNotEmpty property="FIXED_ID">
+				T1.friend_id = #FIXED_ID# DESC,
+			</isNotEmpty>
+			<isEqual property="SORT" compareValue="1">
+				T1.create_date DESC
+			</isEqual>
+			<isEqual property="SORT" compareValue="2">
+				T1.create_date ASC
+			</isEqual>
+		<dynamic prepend="LIMIT">
+			<isNotEmpty property="START">
+				$START$,
+			</isNotEmpty>
+			<isNotEmpty property="LIMIT">
+				$LIMIT$
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<select id="getLineFriendListForTalk" resultClass="dto.Entity.LineFriend">
+	SELECT
+		T1.friend_id,
+		T1.line_account_id,
+		T1.email,
+		T1.line_id,
+		T1.profile_image,
+		T1.display_name,
+		T1.status_message,
+		T1.state,
+		T1.support,
+		T1.block_date,
+		T1.create_date,
+		T1.update_date,
+		IFNULL(T2.not_read_count,0) as not_read_count,
+		T2.create_date as chat_create_date
+	FROM
+		$SCHEMA$.line_friend T1
+	LEFT JOIN
+		(
+		SELECT
+			friend_id,
+			COUNT(chat_id) as not_read_count,
+			create_date
+		FROM
+			$SCHEMA$.line_chat_history
+		WHERE
+			is_read = 0 AND
+			direction = 2
+		GROUP BY friend_id
+		ORDER BY
+		<isEqual property="SORT" compareValue="2">
+			not_read_count DESC
+		</isEqual>
+		<dynamic prepend="LIMIT">
+			<isNotEmpty property="START">
+				$START$,
+			</isNotEmpty>
+			<isNotEmpty property="LIMIT">
+				$LIMIT$
+			</isNotEmpty>
+		</dynamic>
+		) T2
+	ON
+		T1.friend_id = T2.friend_id
+	WHERE
+	<isNotEmpty property="FRIEND_ID_LIST" close="AND">
+		T1.friend_id in (#FRIEND_ID_LIST#)
+	</isNotEmpty>
+	<isEqual property="FRIEND_ID_LIST" compareValue="NULL" close="AND">
+		T1.friend_id is NULL
+	</isEqual>
+	<isNotEmpty property="DISPLAY_NAME" close="AND">
+		T1.display_name LIKE ('%$DISPLAY_NAME$%')
+	</isNotEmpty>
+	<isNotEmpty property="CREATE_DATE_START" close="AND">
+		T1.create_date &gt;= #CREATE_DATE_START#
+	</isNotEmpty>
+	<isNotEmpty property="CREATE_DATE_END" close="AND">
+		T1.create_date &lt;= #CREATE_DATE_END#
+	</isNotEmpty>
+	<isEqual property="STATE" compareValue="0" close="AND">
+		T1.state = 0
+	</isEqual>
+	<isEqual property="STATE" compareValue="2" close="AND">
+		T1.state = 2
+	</isEqual>
+	<isEqual property="STATE" compareValue="3" close="AND">
+		T1.state = 3
+	</isEqual>
+	<isEqual property="STATE" compareValue="99" close="AND">
+		T1.state in (0,2)
+	</isEqual>
+	<isEqual property="MAIL_STATUS" compareValue="2" close="AND">
+		T1.email = ""
+	</isEqual>
+	<isEqual property="MAIL_STATUS" compareValue="3" close="AND">
+		T1.email != ""
+	</isEqual>
+		T1.line_account_id = #LINE_ACCOUNT_ID#
+	ORDER BY
+		<isNotEmpty property="FIXED_ID">
+			T1.friend_id = #FIXED_ID# DESC,
+		</isNotEmpty>
+		<isEqual property="SORT" compareValue="1">
+			T1.create_date
+		</isEqual>
+		<isEqual property="SORT" compareValue="2">
+			T2.create_date DESC,not_read_count DESC,T1.create_date DESC
+		</isEqual>
+	<dynamic prepend="LIMIT">
+		<isNotEmpty property="START">
+			$START$,
+		</isNotEmpty>
+		<isNotEmpty property="LIMIT">
+			$LIMIT$
+		</isNotEmpty>
+	</dynamic>
+</select>
+
+	<!-- フレンド情報　カウント数 -->
+	<select id="getLineFriendCount" resultClass="Integer">
+		SELECT
+			COUNT(T1.friend_id)
+		FROM
+			$SCHEMA$.line_friend T1
+		WHERE
+		<isNotEmpty property="FRIEND_ID_LIST" close="AND">
+			T1.friend_id in ($FRIEND_ID_LIST$)
+		</isNotEmpty>
+		<isNotEmpty property="DISPLAY_NAME" close="AND">
+			T1.display_name like ('%$DISPLAY_NAME$%')
+		</isNotEmpty>
+		<isNotEmpty property="CREATE_DATE_START" close="AND">
+			T1.create_date &gt;= #CREATE_DATE_START#
+		</isNotEmpty>
+		<isNotEmpty property="CREATE_DATE_END" close="AND">
+			T1.create_date &lt;= #CREATE_DATE_END#
+		</isNotEmpty>
+		<isEqual property="STATE" compareValue="0" close="AND">
+			T1.state = 0
+		</isEqual>
+		<isEqual property="STATE" compareValue="2" close="AND">
+			T1.state = 2
+		</isEqual>
+		<isEqual property="STATE" compareValue="3" close="AND">
+			T1.state = 3
+		</isEqual>
+		<isEqual property="STATE" compareValue="99" close="AND">
+			T1.state in (0,2)
+		</isEqual>
+		<isEqual property="MAIL_STATUS" compareValue="2" close="AND">
+			T1.email = ""
+		</isEqual>
+		<isEqual property="MAIL_STATUS" compareValue="3" close="AND">
+			T1.email != ""
+		</isEqual>
+			T1.line_account_id = #LINE_ACCOUNT_ID# AND
+			T1.del_flg = 0
+	</select>
+
+	<!-- フレンド情報 -->
+	<select id="getLineFriendCountTop" resultClass="dto.Entity.LineFriend">
+		SELECT
+			COUNT( case when state = 2 then 1 ELSE NULL END ) AS active_block,
+			COUNT( case when state = 3 then 1 ELSE NULL END ) AS negative_block,
+			COUNT( case when support = 0 then 1 ELSE NULL END ) AS not_support,
+			COUNT(friend_id) AS friend_count
+		FROM
+			$SCHEMA$.line_friend
+		WHERE
+			line_account_id = #LINE_ACCOUNT_ID# AND
+			del_flg = 0
+	</select>
+
+	<!-- フレンド削除-->
+<delete id="cleanLineFriend">
+	DELETE FROM
+		$SCHEMA$.line_friend
+	WHERE
+		line_account_id = #LINE_ACCOUNT_ID#
+</delete>
+
+</sqlMap>

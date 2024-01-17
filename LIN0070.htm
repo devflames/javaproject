@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<!--
+* CoreUI Pro based Bootstrap Admin Template
+* @version v3.2.0
+* @link https://coreui.io/pro/
+* Copyright (c) 2020 creativeLabs ?ukasz Holeczek
+* License (https://coreui.io/pro/license)
+-->
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="description" content="CoreUI - Open Source Bootstrap Admin Template">
+    <meta name="author" content="?ukasz Holeczek">
+    <meta name="keyword" content="Bootstrap,Admin,Template,Open,Source,jQuery,CSS,HTML,RWD,Dashboard">
+    <title>オートビズ管理画面</title>
+    <!-- Main styles for this application-->
+	#parse( "include/style.inc")
+  </head>
+
+  <body class="c-app">
+	#parse( "include/sidebar.inc")
+    <div class="c-wrapper">
+	#parse( "include/global_header.inc")
+      <div class="c-body">
+        <main class="c-main">
+          <div class="container-fluid">
+            <div class="fade-in">
+
+            <form action="php2java.php?file=LIN0070&if=3" method="POST" name="EXEC_FORM" id="EXEC_FORM">
+              <h1 class="h4 d-flex align-items-center mb-3">
+                <a href="php2java.php?file=LIN0000&if=3"><button type="button" class="btn-back"></button></a>
+                友だち追加時設定
+              </h1>
+              #if( $!{MESSAGE}  )
+              <div class="alert alert-info" role="alert">
+                $!{MESSAGE}
+              </div>
+              #end
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="card">
+                    <div class="card-header">
+                      新規友だち
+                    </div>
+                    <div class="card-body">
+                      <div class="form-group row">
+                        <label for="" class="col-sm-2 col-form-label">タグ</label>
+                        <div class="col-sm-10">
+                          <input type="text" class="form-control tag-suggest" name="NEW_TAG" value="$!{NEW_TAG_VALUE}">
+                          <small>※システム導入後、はじめて友だちになったアカウントが対象です</small>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- /.col-->
+                <div class="col-md-6">
+                  <div class="card">
+                    <div class="card-header">
+                      導入前からの友だち・ブロックを解除した友だち
+                    </div>
+                    <div class="card-body">
+                      <div class="form-group row">
+                        <label for="" class="col-sm-2 col-form-label">タグ</label>
+                        <div class="col-sm-10">
+                          <input type="text" class="form-control tag-suggest" name="RENEW_TAG" value="$!{RENEW_TAG_VALUE}">
+                          <small>
+                          ※ブロックを解除したアカウント、またはシステム導入前からの友だちから、導入後にメッセージがあった際タグづけします
+                          </small>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- /.col-->
+              </div>
+              <div class="text-center">
+                <button type="submit" class="btn btn-primary btn-lg mx-auto px-5">
+                  保存する
+                </button>
+              </div>
+
+              <input type="hidden" name="TAG_LIST" id="TAG_LIST" value='$!{TAG_JSON}'>
+              <input type="hidden" name="EXEC_TYPE" value="RELOAD">
+              </form>
+            </div>
+
+          </div>
+        </main>
+      </div>
+	#parse( "include/c_footer.inc")
+    </div>
+    <!-- CoreUI and necessary plugins-->
+	#parse( "include/js.inc")
+	<script type="text/javascript">
+	$(document).ready(function(){
+		initTagsSuggest2();
+	});
+	</script>
+
+
+  </body>
+</html>
